@@ -46,3 +46,20 @@ node --test tools/tests/content_tools.test.mjs
 
 以暫存目錄建立合法內容包與 8 種破壞情境，確認驗證器與 manifest 產生器行為正確。
 測試會自行清理暫存目錄，不需要 Godot。
+
+## 素材目錄與聯絡表工具
+
+```bash
+# 1) 建立 game-content/asset_catalog（分類、tags、sha256、授權摘要）
+node app_base_git/tools/build_asset_catalog.mjs \
+  --assets /workspace/自動遊戲開發/assets \
+  --out /workspace/自動遊戲開發/app_data_git/asset_catalog
+
+# 2) 產生聯絡表（省 token 的素材總覽，輸出到工作區 tools/asset_previews）
+"$G" --headless --path app_base_git --script res://tools/make_contact_sheets.gd -- \
+  --assets=/workspace/自動遊戲開發/assets \
+  --out=/workspace/自動遊戲開發/tools/asset_previews
+```
+
+- 原始素材在工作區 `assets/`（不進 Git）；Items16 授權禁止再散布，不得放進公開 APK。
+- 聯絡表依列優先排列，格子索引對照同目錄 `.json`，不必逐張開圖。

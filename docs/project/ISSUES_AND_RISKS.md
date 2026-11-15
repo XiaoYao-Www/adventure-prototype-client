@@ -22,5 +22,6 @@
 | R-018 | 可用性 | 第一版觸控在實機無效；第二版改為自繪＋命中測試並有完整模擬測試，但**尚未實機複驗** | 高 | open（已重寫，待驗） | 任務 1：實機回報第二版是否可操作；仍失敗則需抓 logcat。 |
 | R-019 | 字型 | 中文在 Android 的實際渲染（缺字、行距、字重）未驗證；僅驗證字型含字形且已打包 | 中 | open | 任務 1：實機截圖確認。 |
 | R-020 | 環境 | 建置工具鏈在 `tools/` 不進 Git，換機器需重新安裝（腳本已文件化） | 中 | open（可接受） | `tools/build_android.sh` 與 `docs/BUILD.md` 已記錄步驟；需要時改為容器化。 |
-| R-021 | 授權 | 使用者提供的 Mini World Sprites／Items16 授權尚未逐包核對來源頁面與下載檔條款 | 高 | open | 任務 3（asset catalog 授權核對）；未確認前不得進入公開 APK。 |
-| R-022 | 美術整合 | 素材尚未替換遊戲內 placeholder（目前畫面仍是專案自製圖與色塊） | 中 | open | 任務 2：依 asset_catalog 挑選地形／角色並建置 TileSet 與替換。 |
+| R-021 | 授權 | 兩包授權已核對：Mini World Sprites 為 CC0-1.0；Items16 可商用/修改但禁止再散布原始包 | 高 | **resolved（有限制）** | Items16 標 `redistributable=false`，不得進公開 APK；日後公開發布需替換或取得許可。 |
+| R-022 | 美術整合 | 素材尚未替換遊戲內 placeholder（目前畫面仍是專案自製圖與色塊） | 中 | open | 任務 3：依 asset_catalog 挑選地形／角色並建置 TileSet 與替換（Items16 僅內部測試用）。 |
+| R-023 | 素材 | Items16 無語意檔名／對照表，1244 張圖示尚未逐張語意分類 | 低 | open | 需要時用聯絡表定位編號再建立 mapping；不要用編號猜類型。 |

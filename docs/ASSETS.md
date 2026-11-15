@@ -74,3 +74,23 @@ Android 沒有保證使用者裝置具備我們需要的正體中文字型，且
 - 本字型只用於遊戲 UI 文字；未修改字型檔，未重新命名。
 - **未驗證**：Android 實機上的中文顯示、字重與行距（本環境無顯示器，headless 不呈現畫面）。
 - 若之後更換字型，必須同步更新此表、`OFL.txt` 與 `tools/README.md` 紀錄。
+
+## 使用者提供的素材（2026-11-16，尚未接入遊戲）
+
+原始素材放在**工作區** `assets/`（不進 Git），已建立分類目錄於
+`game-content/asset_catalog/`。目前 APK 仍使用上方 placeholder，尚未替換。
+
+| 素材包 | 檔案數 | 授權 | 可否再散布 | 狀態 |
+| --- | --- | --- | --- | --- |
+| 16x16 Mini World Sprites（merchant-shade / octoshrimpy） | 207 | CC0-1.0 | 可 | 可接入 |
+| Items16（Glionox） | 1244 | 自訂：可商用/可修改、**禁止再散布或轉售原始包** | 不可 | 僅本地／內部測試使用，不進公開 APK |
+
+- 授權查核日：2026-11-16；依據頁面：
+  https://merchant-shade.itch.io/16x16-mini-world-sprites 、
+  https://glionox.itch.io/items16
+- 分類／雜湊／tags：`app_data_git/asset_catalog/catalog.json`、
+  `generated/index_by_category.json`；授權摘要：`asset_catalog/licenses/SUMMARY.md`。
+- 聯絡表（省 token，不進版控）：工作區 `tools/asset_previews/mini_world_sprites.png`、
+  `tools/asset_previews/items16.png`，對照索引為同目錄 `.json`。
+- 重新產生目錄：`node tools/build_asset_catalog.mjs --assets <工作區>/assets --out <game-content>/asset_catalog`。
+- 注意：Items16 沒有語意檔名，目錄只標 `item_icon`；要挑特定道具請先看聯絡表定位編號。

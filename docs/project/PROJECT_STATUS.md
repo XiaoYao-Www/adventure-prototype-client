@@ -76,8 +76,10 @@
 
 - 工作區 `assets/`：Mini World Sprites（207 張，16×16 地形／建築／角色／物件等）與
   Items16（1244 張 16×16 道具圖示），共 1451 張 PNG、2.42MB、無重複內容。
-- 已建立分類與標記目錄於 `game-content/asset_catalog/`（見該倉庫）；**授權仍在核對**，
-  未經確認前不得進入公開 APK。
+- 已完成授權核對與分類目錄（`game-content/asset_catalog/`，commit `494eb0e`）：
+  Mini World Sprites **CC0-1.0**（可再散布）；Items16 可商用/可修改但**禁止再散布原始包**，
+  故 item 圖示不得進公開 APK（僅內部測試）。
+- 已產生聯絡表（工作區 `tools/asset_previews/`）與索引，日後不需逐張開圖。
 - 目前 APK 仍使用專案自製 placeholder 與內建字型，尚未替換為這些素材。
 
 ## 目前阻塞

@@ -19,8 +19,9 @@
 - APK：`releases/android/adventure-prototype-0.1.0-debug.apk`
   （37,302,171 bytes、SHA-256 `6bd14f00f983cfb0f8b8ddd83baed6066990735130352f50e143e242e4c02470`）。
 - 使用者回饋：第一版「手機沒有有效操作」→ 已重寫，**等實機複驗**；並要求橫向（已設 sensor landscape）。
-- 素材：使用者提供 Mini World Sprites + Items16（1451 張 16×16 PNG，2.42MB），
-  已盤點與建立 catalog；**授權尚未確認**，尚未進 APK。
+- 素材：使用者提供 Mini World Sprites（CC0-1.0）＋ Items16（可商用/修改、禁止再散布），
+  1451 張 16×16 PNG；已建立 catalog／授權／聯絡表（content `494eb0e`），**尚未接入遊戲**。
+  Items16 不得進公開 APK。
 - 雙倉庫：client `master`、content `master`；皆無 remote、未 push。
 
 ## 下一個動作

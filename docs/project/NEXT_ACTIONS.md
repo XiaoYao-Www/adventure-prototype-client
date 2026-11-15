@@ -10,12 +10,10 @@
    - 若仍無法操作：提供 logcat（`adb logcat -s godot`）或畫面截圖；必要時加 log 診斷。
    - 驗收：回報可操作／不可操作與具體現象。
 
-2. **[P0] 素材授權核對與 `asset_catalog` 完成**
-   - 內容：核對 Mini World Sprites（merchant-shade.itch.io）與 Items16（glionox.itch.io）
-     的授權條款與再散布條件；建立 packs／licenses 紀錄與分類索引。
-   - 驗收：每包有來源、作者、版本、下載日、授權全文位置與狀態；
-     未確認授權者標 `license_unverified`，不得進公開 APK。
-   - 依賴：無。
+2. **[完成] 素材授權核對與 `asset_catalog`**
+   - 已完成：CC0（Mini World Sprites）與限制再散布（Items16）已核對並記錄；
+     分類、tags、sha256、聯絡表已建立（content commit `494eb0e`）。
+   - 後續：公開發布前需處理 Items16 限制（替換或授權）。
 
 3. **[P1] 用真實素材替換 placeholder 美術**
    - 內容：從 `asset_catalog` 挑選 16×16 地形（草/路/水/牆/樹）、角色與物件，

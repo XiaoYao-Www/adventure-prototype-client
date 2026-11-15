@@ -182,3 +182,15 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
 
 - `bash tools/build_android.sh`：TESTS OK 300/300、APK 匯出＋簽章＋zipalign 驗證通過。
 - 未驗證：實機觸控與橫向顯示（本環境無 Android 裝置）。
+
+### 素材目錄與標記（同日完成）
+
+- 建立 `app_base_git/tools/build_asset_catalog.mjs`：解析 PNG 尺寸／sha256、
+  依目錄與檔名分類，輸出 `game-content/asset_catalog/`（catalog、packs、licenses、index）。
+- 建立 `app_base_git/tools/make_contact_sheets.gd`：用 Godot Image API 產生
+  `mini_world_sprites.png`（207 張）與 `items16.png`（1244 張）聯絡表 + 對照索引，
+  只讀兩張總覽即可分類，不必逐張看圖。
+- 授權核對（itch.io）：Mini World Sprites = CC0-1.0；Items16 = 可商用/可修改、
+  禁止再散布或轉售原始包 → 標記 `redistributable=false`，不進公開 APK。
+- 提交 content repo：`494eb0e`（asset_catalog + ASSET_POLICY + changelog）。
+- 限制：Items16 無語意檔名與對照表，目前只標 `item_icon`，尚未逐張語意分類。
