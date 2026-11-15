@@ -1,0 +1,45 @@
+name: release-client
+
+# 推送 v* tag 即自動建立 GitHub Release：
+# - 遊戲本體 APK（已提交於 releases/android/，使用固定 debug keystore 簽章）
+# - update/latest.json（App 啟動時用來檢查本體更新）
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build update manifest
+        run: node tools/make_update_manifest.mjs --tag "${GITHUB_REF_NAME}"
+
+      - name: Verify APK exists
+        run: |
+          ls -la releases/android/*.apk
+          node -e "JSON.parse(require('fs').readFileSync('update/latest.json','utf8')); console.log('latest.json OK')"
+
+      - name: Create release and upload assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "Adventure Prototype ${GITHUB_REF_NAME}" \
+            --notes-file update/RELEASE_NOTES.md \
+            --latest \
+            update/latest.json \
+            releases/android/*.apk \
+            releases/android/BUILD_INFO.md
+          gh release view "${GITHUB_REF_NAME}" --json assets --jq '.assets[].name'

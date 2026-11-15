@@ -54,7 +54,28 @@ static func resolve_content_dir(user_args: PackedStringArray, project_setting: S
 		return cli_dir
 	if not project_setting.is_empty():
 		return project_setting
+	var installed: String = installed_content_dir()
+	if not installed.is_empty():
+		return installed
 	return "res://content"
+
+
+## 已透過自動更新安裝的內容（user://content_current.json）；沒有或損壞時回傳空字串。
+static func installed_content_dir() -> String:
+	const pointer_path := "user://content_current.json"
+	if not FileAccess.file_exists(pointer_path):
+		return ""
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(pointer_path))
+	if not parsed is Dictionary:
+		return ""
+	var dir_path := String((parsed as Dictionary).get("dir", ""))
+	if not dir_path.begins_with("user://"):
+		return ""
+	if not DirAccess.dir_exists_absolute(dir_path):
+		return ""
+	if not FileAccess.file_exists(dir_path.path_join("manifest.json")):
+		return ""
+	return dir_path
 
 
 ## 從 `--` 之後的使用者參數解析 `--content-dir=<abs path>`。

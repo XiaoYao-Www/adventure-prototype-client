@@ -65,7 +65,7 @@ timeout 240 "$G" --headless --path . --script res://tests/run_tests.gd \
   -- --content-dir=/workspace/自動遊戲開發/app_data_git
 ```
 
-- 2026-11-16 實測：**TESTS OK 300/300**（含觸控命中／連走／滑動／對話阻擋與 CJK 字型字形檢查）。
+- 2026-11-16 實測：**TESTS OK 332/332**（含觸控、內容包安裝／回滾、版本比較與 CJK 字型檢查）。
 - 輸出最後一行 `TESTS OK n/n` 或 `TESTS FAILED ...`；exit code 0/1。
 - 無 `--content-dir` 時，真實內容測試會標記 `[SKIP]`，不得視為通過。
 
@@ -74,7 +74,7 @@ timeout 240 "$G" --headless --path . --script res://tests/run_tests.gd \
 ```bash
 mkdir -p releases/android
 timeout 420 "$G" --headless --path . --export-debug "Android" \
-  "$PWD/releases/android/adventure-prototype-0.1.0-debug.apk"
+  "$PWD/releases/android/adventure-prototype-0.2.0-debug.apk"
 ```
 
 - preset 定義於 `export_presets.cfg`（非 gradle 建置、arm64-v8a、minSdk 24、targetSdk 36）。
@@ -85,7 +85,7 @@ timeout 420 "$G" --headless --path . --export-debug "Android" \
 ## 5. 驗證 APK
 
 ```bash
-APK=releases/android/adventure-prototype-0.1.0-debug.apk
+APK=releases/android/adventure-prototype-0.2.0-debug.apk
 "$ANDROID_HOME/build-tools/36.1/apksigner" verify --print-certs "$APK"
 "$ANDROID_HOME/build-tools/36.1/aapt2" dump badging "$APK" | head
 "$ANDROID_HOME/build-tools/36.1/zipalign" -c -v 4 "$APK"
@@ -121,3 +121,18 @@ sha256sum "$APK"
 | Android 實機安裝／啟動／觸控／螢幕比例／安全區 | 未執行 | 本環境無 Android 裝置與模擬器 |
 | 正式（release）簽章與上架 | 未執行 | 目前只有 debug 簽章；正式金鑰須由使用者控制 |
 | 音效／動畫／戰鬥／成人模組 | 未實作 | 不在 v0.1 範圍 |
+
+
+## 8. 自動更新與 release（v0.2.0）
+
+- 本體：App 啟動時 GET `releases/latest/download/latest.json`，比 `version_code`；
+  較新則下載 APK、驗 sha256/size，再以 `AndroidRuntime` + `JavaClassWrapper` 呼叫
+  FileProvider 產生 content URI、啟動系統安裝程式。Android 一定顯示安裝確認，
+  且首次需允許「安裝未知的應用程式」。
+- 內容：GET `releases/latest/download/latest_data.json`，比 `content_version`；
+  較新則下載內容包 ZIP、驗 sha256，用 `ContentInstaller` 解到 `user://content_packs/`，
+  經 `ContentRepository` 完整驗證後切換 `user://content_current.json`（下次啟動生效，失敗保留舊版）。
+- 發布：推送 `v*` tag → GitHub Actions `release.yml` 建立 release 並上傳
+  APK + `latest.json` + BUILD_INFO；內容 repo 推送 `data-v*` tag → `release-data.yml`
+  產生內容包 ZIP + `latest_data.json`。
+- 詳細設計與限制見 `docs/architecture/UPDATE_SYSTEM.md`。

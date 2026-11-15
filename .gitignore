@@ -31,3 +31,6 @@ Thumbs.db
 *.apk
 !releases/android/*.apk
 *.apk.idsig
+
+# 更新資訊（由 GitHub Actions 於 tag 時產生）
+update/

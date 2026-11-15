@@ -85,6 +85,7 @@ func _run_all() -> void:
 	await _test_world_view_atlas()
 	await _test_player_controller()
 	await _test_main_scene()
+	_test_updates()
 	_test_real_content()
 
 
@@ -693,7 +694,7 @@ func _test_input_map_and_project_settings() -> void:
 	th.check_eq(String(ProjectSettings.get_setting("display/window/stretch/mode", "")), "canvas_items", "stretch mode canvas_items")
 	th.check_eq(String(ProjectSettings.get_setting("display/window/stretch/aspect", "")), "expand", "stretch aspect expand")
 	th.check_eq(String(ProjectSettings.get_setting("rendering/renderer/rendering_method", "")), "gl_compatibility", "渲染方式 gl_compatibility")
-	th.check_eq(String(ProjectSettings.get_setting("application/config/version", "")), "0.1.0", "遊戲版本 0.1.0")
+	th.check_eq(String(ProjectSettings.get_setting("application/config/version", "")), "0.2.0", "遊戲版本 0.2.0")
 	th.check_eq(String(ProjectSettings.get_setting("application/run/main_scene", "")), "res://scenes/main.tscn", "主場景")
 
 	# CJK 字型：APK 內建 Noto Sans TC（OFL），避免中文顯示成方塊或空白
@@ -898,6 +899,187 @@ func _touch_event(point: Vector2, pressed: bool) -> InputEventScreenTouch:
 	event.position = point
 	event.pressed = pressed
 	return event
+
+
+# ---------------------------------------------------------------------------
+# 自動更新（本體 APK + 內容 DATA）
+# ---------------------------------------------------------------------------
+
+func _test_updates() -> void:
+	th.section("版本比較")
+	th.check_true(VersionUtil.is_newer("0.2.1", "0.2.0"), "0.2.1 比 0.2.0 新")
+	th.check_false(VersionUtil.is_newer("0.2.0", "0.2.0"), "相同版本不算新")
+	th.check_true(VersionUtil.is_newer("1.0.0", "0.9.9"), "主版號較大")
+	th.check_eq(VersionUtil.compare("1.2.3", "1.2.10"), -1, "次版號數值比較")
+	th.check_eq(VersionUtil.parse("3.4"), [3, 4, 0], "版本解析補零")
+
+	th.section("更新資訊解析（本體）")
+	var manifest_ok := {
+		"schema": 1, "version": "0.2.1", "version_code": 3,
+		"apk_url": "https://github.com/x/y/releases/download/v0.2.1/a.apk",
+		"sha256": "a".repeat(64), "size": 123,
+	}
+	var app_result := UpdateChecker.evaluate_app_manifest(manifest_ok, 2, "0.2.0")
+	th.check_true(bool(app_result.get("valid", false)), "合法最新版資訊")
+	th.check_true(bool(app_result.get("newer", false)), "version_code 3 > 2 視為較新")
+	var same_app := UpdateChecker.evaluate_app_manifest(manifest_ok, 3, "0.2.1")
+	th.check_false(bool(same_app.get("newer", false)), "相同 version_code 不更新")
+	var bad_app := UpdateChecker.evaluate_app_manifest({"schema": 1}, 2, "0.2.0")
+	th.check_false(bool(bad_app.get("valid", false)), "缺欄位資訊無效")
+	th.check_true((bad_app.get("errors", []) as Array).size() > 0, "缺欄位有錯誤訊息")
+	var http_app := UpdateChecker.evaluate_app_manifest({
+		"schema": 1, "version": "9.0.0", "version_code": 9,
+		"apk_url": "http://insecure/a.apk", "sha256": "a".repeat(64), "size": 1,
+	}, 2, "0.2.0")
+	th.check_false(bool(http_app.get("valid", false)), "非 https 下載網址拒絕")
+
+	th.section("更新資訊解析（內容）")
+	var data_ok := {
+		"schema": 1, "content_version": "0.1.1", "schema_version": 1,
+		"bundle_url": "https://github.com/x/y/releases/download/data-v0.1.1/c.zip",
+		"sha256": "b".repeat(64), "size": 456,
+	}
+	var data_result := UpdateChecker.evaluate_data_manifest(data_ok, "0.1.0")
+	th.check_true(bool(data_result.get("valid", false)), "合法內容資訊")
+	th.check_true(bool(data_result.get("newer", false)), "0.1.1 > 0.1.0")
+	var same_data := UpdateChecker.evaluate_data_manifest(data_ok, "0.1.1")
+	th.check_false(bool(same_data.get("newer", false)), "相同內容版本不更新")
+	var bad_data := UpdateChecker.evaluate_data_manifest({"schema": 2}, "0.1.0")
+	th.check_false(bool(bad_data.get("valid", false)), "schema 錯誤拒絕")
+
+	th.section("內容包安裝（ZIP）")
+	var zip_path := "user://test_content_bundle.zip"
+	var source_dir := _copy_fixture_to_user("valid_content", "user://test_content_src_v1")
+	_zip_directory(source_dir, zip_path)
+	var sha := FileAccess.get_sha256(zip_path)
+	var install := ContentInstaller.install_zip(zip_path, sha, "0.1.0")
+	th.check_true(bool(install.get("ok", false)), "合法內容包安裝成功")
+	th.check_eq(ContentInstaller.current_version(), "0.1.0", "已安裝版本 0.1.0")
+	var installed_dir := ContentInstaller.current_dir()
+	th.check_true(installed_dir.begins_with("user://content_packs/"), "安裝於 user://content_packs")
+	th.check_eq(
+		ContentRepository.resolve_content_dir(PackedStringArray(), ""),
+		installed_dir,
+		"內容解析優先使用已安裝內容"
+	)
+
+	# 新版本安裝 + 回滾
+	var source_v2 := _copy_fixture_to_user("valid_content", "user://test_content_src_v2")
+	var manifest_v2: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(source_v2.path_join("manifest.json")))
+	manifest_v2["content_version"] = "0.1.1"
+	_write_json_file(source_v2.path_join("manifest.json"), manifest_v2)
+	var zip_v2 := "user://test_content_bundle_v2.zip"
+	_zip_directory(source_v2, zip_v2)
+	var install_v2 := ContentInstaller.install_zip(zip_v2, FileAccess.get_sha256(zip_v2), "0.1.1")
+	th.check_true(bool(install_v2.get("ok", false)), "新版本內容包安裝成功")
+	th.check_eq(ContentInstaller.current_version(), "0.1.1", "版本切換到 0.1.1")
+	var rollback := ContentInstaller.rollback()
+	th.check_true(bool(rollback.get("ok", false)), "可回滾到上一版")
+	th.check_eq(ContentInstaller.current_version(), "0.1.0", "回滾後版本 0.1.0")
+
+	# 雜湊不符 → 拒絕且不改變現有版本
+	var bad_install := ContentInstaller.install_zip(zip_path, "0".repeat(64), "9.9.9")
+	th.check_false(bool(bad_install.get("ok", false)), "sha256 不符拒絕安裝")
+	th.check_eq(ContentInstaller.current_version(), "0.1.0", "失敗安裝不影響現有版本")
+
+	# 不安全 ZIP 路徑拒絕
+	var unsafe_zip := "user://test_content_unsafe.zip"
+	_write_unsafe_zip(unsafe_zip)
+	var unsafe_result := ContentInstaller.install_zip(unsafe_zip, FileAccess.get_sha256(unsafe_zip), "0.0.1")
+	th.check_false(bool(unsafe_result.get("ok", false)), "ZIP 內含 ../ 路徑被拒絕")
+
+	# 清理，避免影響其他測試與下次啟動
+	ContentInstaller.clear_installed()
+	DirAccess.remove_absolute(zip_path)
+	DirAccess.remove_absolute(zip_v2)
+	DirAccess.remove_absolute(unsafe_zip)
+	DirAccess.remove_absolute("user://test_content_src_v1/manifest.json")
+	DirAccess.remove_absolute("user://test_content_src_v2/manifest.json")
+	_remove_dir_recursive("user://test_content_src_v1")
+	_remove_dir_recursive("user://test_content_src_v2")
+	th.check_eq(ContentInstaller.current_dir(), "", "清理後沒有已安裝內容")
+
+	th.section("Android 安裝器（非 Android 平台）")
+	th.check_false(AndroidInstaller.is_android(), "headless 非 Android")
+	var non_android := AndroidInstaller.install_apk("user://not_exists.apk")
+	th.check_false(bool(non_android.get("ok", false)), "非 Android 不安裝")
+	th.check_true(String(non_android.get("error", "")).length() > 0, "有可讀錯誤訊息")
+
+
+func _copy_fixture_to_user(fixture_name: String, dest_dir: String) -> String:
+	var source_root: String = _fixture_path(fixture_name)
+	_remove_dir_recursive(dest_dir)
+	_copy_dir_recursive(source_root, dest_dir)
+	return dest_dir
+
+
+func _copy_dir_recursive(source: String, dest: String) -> void:
+	DirAccess.make_dir_recursive_absolute(dest)
+	var dir := DirAccess.open(source)
+	if dir == null:
+		return
+	for file_name: String in dir.get_files():
+		var data := FileAccess.get_file_as_bytes(source.path_join(file_name))
+		var target := dest.path_join(file_name)
+		var writer := FileAccess.open(target, FileAccess.WRITE)
+		if writer != null:
+			writer.store_buffer(data)
+			writer.close()
+	for sub: String in dir.get_directories():
+		_copy_dir_recursive(source.path_join(sub), dest.path_join(sub))
+
+
+func _zip_directory(source_dir: String, zip_path: String) -> void:
+	var files: Array[String] = []
+	_collect_zip_files(source_dir, "", files)
+	var packer := ZIPPacker.new()
+	var open_error := packer.open(zip_path)
+	th.check_eq(open_error, OK, "ZIPPacker 開啟成功")
+	for relative_path: String in files:
+		var data := FileAccess.get_file_as_bytes(source_dir.path_join(relative_path))
+		packer.start_file(relative_path)
+		packer.write_file(data)
+		packer.close_file()
+	packer.close()
+
+
+func _collect_zip_files(base_dir: String, prefix: String, out: Array[String]) -> void:
+	var dir := DirAccess.open(base_dir)
+	if dir == null:
+		return
+	for file_name: String in dir.get_files():
+		out.append(prefix + file_name)
+	for sub: String in dir.get_directories():
+		_collect_zip_files(base_dir.path_join(sub), prefix + sub + "/", out)
+
+
+func _write_unsafe_zip(zip_path: String) -> void:
+	var packer := ZIPPacker.new()
+	packer.open(zip_path)
+	packer.start_file("../evil.json")
+	packer.write_file("{}".to_utf8_buffer())
+	packer.close_file()
+	packer.close()
+
+
+func _write_json_file(path: String, data: Dictionary) -> void:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file != null:
+		file.store_string(JSON.stringify(data, "  "))
+		file.close()
+
+
+func _remove_dir_recursive(path: String) -> void:
+	if not DirAccess.dir_exists_absolute(path):
+		return
+	var dir := DirAccess.open(path)
+	if dir == null:
+		return
+	for file_name: String in dir.get_files():
+		DirAccess.remove_absolute(path.path_join(file_name))
+	for sub: String in dir.get_directories():
+		_remove_dir_recursive(path.path_join(sub))
+	DirAccess.remove_absolute(path)
 
 
 func _test_real_content() -> void:

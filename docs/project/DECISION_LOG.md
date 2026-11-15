@@ -32,6 +32,10 @@
 | D-0024 | 2026-11-16 | 導入使用者提供的素材：Mini World Sprites 與 Items16；先建立 asset_catalog 分類／雜湊／授權狀態，暫不進 APK | accepted | 使用者要求自行分類與標記；授權尚未逐包核對（license_unverified），不得發布 | art pipeline、content repo |
 | D-0025 | 2026-11-16 | 素材授權分類：Mini World Sprites 採 CC0-1.0 可再散布；Items16 僅「內部使用」不得進公開 APK（redistributable=false） | accepted | itch.io 頁面授權已核對（2026-11-16）；專案規則要求再散布受限素材必須隔離 | art pipeline、release |
 | D-0026 | 2026-11-16 | 兩個 GitHub 遠端倉庫：client=adventure-prototype-client、data=adventure-prototype-data；本地分支改為 `main` 對齊遠端預設分支；採每倉庫一把 SSH deploy key（write） | accepted | 使用者提供兩個 GitHub repo 並要求連接；deploy key 最小權限 | repository、release |
+| D-0027 | 2026-11-16 | 自動更新架構：GitHub Releases 的 `latest.json`/`latest_data.json` 作為更新來源；APK 下載後驗 sha256/size，再以 AndroidRuntime + JavaClassWrapper + FileProvider 啟動系統安裝；內容包以 ZIP 下載、ContentRepository 驗證後安裝到 user://content_packs 並以指標檔切換（下次啟動生效、失敗保留舊版） | accepted | 使用者明確要求「每次開啟自動檢查並更新本體與內容」；Godot 4.7 AndroidRuntime 可從 GDScript 呼叫原生 API | client、release、content |
+| D-0028 | 2026-11-16 | Release 自動化：推送 tag（client `v*`、data `data-v*`）由 GitHub Actions 建立 release 並上傳 APK／更新資訊；App 讀固定網址 `releases/latest/download/*.json`，不需 API token | accepted | 使用者要求「自己提交 release」；deploy key 推送可觸發 workflow，避免在專案保存 token | release、CI |
+| D-0029 | 2026-11-16 | 自動更新只在 Android 平台執行；桌機開發流程不檢查、不自動安裝 | accepted | 桌面版無 Android 安裝器；保持開發可控 | client |
+| D-0030 | 2026-11-16 | 持續使用同一個 debug keystore 簽署所有測試 APK，確保自動更新可覆蓋安裝；正式 release 簽章另案決定（R-025/R-014） | accepted | Android 要求更新 APK 簽章與已安裝版本一致 | release、簽章 |
 
 ## 變更規則
 

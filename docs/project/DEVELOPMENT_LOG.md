@@ -217,3 +217,42 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
 - 驗證：`git ls-remote origin main` 與本地 HEAD 一致；GitHub API commits/main 回傳相同 SHA；
   `raw.githubusercontent.com` 可讀到兩倉庫 README。
 - 註：GitHub API 的 repo `size` 欄位即時顯示 0（更新有延遲），但 commits 與 raw 內容已確認。
+
+## 2026-11-16 — v0.2.0：自動更新（本體＋內容）與 GitHub Release 自動化
+
+### 使用者要求（長期）
+
+1. 自己提交 release。
+2. 遊戲本體每次開啟自行檢查更新並下載安裝。
+3. 本體不需更新時，每次開啟自行檢查並抓取最新內容。
+
+### 實作
+
+- 版本 0.2.0、versionCode 2；權限新增 INTERNET 與 REQUEST_INSTALL_PACKAGES。
+- `scripts/update/version_util.gd`：SemVer 比較。
+- `scripts/update/content_installer.gd`：內容包 ZIP 解壓（路徑安全）、ContentRepository 驗證、
+  user://content_packs 安裝、指標切換、上一版回滾、清理。
+- `scripts/update/android_installer.gd`：AndroidRuntime + JavaClassWrapper + FileProvider
+  + Intent ACTION_VIEW 啟動系統安裝；未允許未知來源時開啟系統設定頁。
+- `scripts/update/update_checker.gd`：抓 latest.json/latest_data.json、版本判斷、下載、
+  sha256/size 驗證、安裝流程；非 Android 自動跳過。
+- `scripts/ui/update_panel.gd`：右上角更新狀態與「重試安裝」按鈕；main.gd 啟動時自動檢查。
+- 內容解析優先序加入「已安裝的內容」（user://content_current.json）。
+- release 工具：`tools/make_update_manifest.mjs`、`tools/make_content_bundle.mjs`（含最小 ZIP writer）。
+- CI：`.github/workflows/release.yml`（client）、data repo `.github/workflows/release-data.yml`。
+- 文件：`docs/architecture/UPDATE_SYSTEM.md`、README/BUILD、AGENTS.md 長期要求。
+- 移除舊版 0.1.0 APK，只保留 v0.2.0 成品。
+
+### 驗證
+
+- `bash tools/build_android.sh`：TESTS OK 332/332、APK 匯出／簽章／zipalign／權限檢查通過。
+- 本體：37,340,085 bytes、SHA-256 `eeb661af51b0b23229306432ced9a0f5d1264c8862b6c7f65fdba86b0f2e6d17`。
+- 更新資訊產生器實測：latest.json（v0.2.0、version_code 2、APK 雜湊）與
+  latest_data.json（base_world 0.1.0、內容包 6987 bytes、sha256）皆正確。
+- 未驗證：實機自動更新下載／系統安裝、內容更新生效、release workflow 首次執行結果
+  （將以 push tag 驗證）。
+
+### 下一步
+
+- 實機驗收 v0.2.0（觸控、橫向、更新流程）。
+- 依 R-025 決定正式 release 簽章。

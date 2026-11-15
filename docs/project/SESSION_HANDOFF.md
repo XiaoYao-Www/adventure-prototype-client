@@ -14,10 +14,13 @@
 
 ## 目前在哪裡
 
-- 階段：**Phase 4**。APK 第二版已建置：橫向、觸控重寫（自繪＋命中測試＋按住連走＋滑動/輕點）、
-  CJK 字型；測試 **300/300**。
-- APK：`releases/android/adventure-prototype-0.1.0-debug.apk`
-  （37,310,532 bytes、SHA-256 `8707ce53b4460bc229fab2403a30cf584a01eeb35edf7715933eaf244ce21b62`）。
+- 階段：**Phase 5**。v0.2.0 已建置並將由 tag 觸發 GitHub Release；功能含自動更新
+  （本體 APK：下載→驗 SHA-256→系統安裝；內容 DATA：下載內容包→驗證→user:// 安裝，下次啟動生效）、
+  觸控、橫向、CJK 字型；測試 **332/332**。
+- APK：`releases/android/adventure-prototype-0.2.0-debug.apk`
+  （37,340,085 bytes、SHA-256 `eeb661af51b0b23229306432ced9a0f5d1264c8862b6c7f65fdba86b0f2e6d17`、versionCode 2）。
+- Release：推送 tag `v*`（本體）／`data-v*`（內容）由 GitHub Actions 自動建立。
+- 更新資訊固定網址：client `/releases/latest/download/latest.json`、data `/releases/latest/download/latest_data.json`。
 - 使用者回饋：第一版「手機沒有有效操作」→ 已重寫，**等實機複驗**；並要求橫向（已設 sensor landscape）。
 - 素材：使用者提供 Mini World Sprites（CC0-1.0）＋ Items16（可商用/修改、禁止再散布），
   1451 張 16×16 PNG；已建立 catalog／授權／聯絡表（content `494eb0e`），**尚未接入遊戲**。
@@ -27,6 +30,8 @@
   data `494eb0e`（https://github.com/XiaoYao-Www/adventure-prototype-data）。
 
 ## 下一個動作
+
+0. 實機安裝 v0.2.0，確認觸控與自動更新流程（logcat 過濾 godot）。
 
 0. 推送已完成；後續變更用 `bash tools/push_to_github.sh` 同步（deploy key 已授權）。
 

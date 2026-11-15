@@ -9,7 +9,7 @@ extends Node
 ## 內容目錄解析順序：CLI `--content-dir=` > ProjectSettings `game/content_dir`
 ## > res://content。缺少內容時顯示 ErrorPanel，不崩潰、不進入遊戲。
 
-const GAME_VERSION := "0.1.0"
+const GAME_VERSION := "0.2.0"
 const ATLAS_TEXTURE_PATH := "res://assets/generated/placeholder_tiles.png"
 const ATLAS_META_PATH := "res://assets/generated/placeholder_tiles.json"
 const CAMERA_ZOOM := 3
@@ -26,6 +26,8 @@ var hud: Hud
 var dialogue_panel: DialoguePanel
 var error_panel: ErrorPanel
 var touch_controls: TouchControls
+var update_panel: UpdatePanel
+var update_checker: UpdateChecker
 var ui_layer: CanvasLayer
 
 var atlas_texture: Texture2D
@@ -68,6 +70,7 @@ func _start_game() -> void:
 	gameplay_ready = true
 	_on_map_changed(session.state.current_map_id, session.state.player_grid)
 	print("[main] 遊戲就緒：地圖 %s，玩家 %s" % [session.state.current_map_id, str(session.state.player_grid)])
+	_setup_auto_updates()
 
 
 # ---------------------------------------------------------------------------
@@ -88,6 +91,11 @@ func _build_ui() -> void:
 
 	error_panel = ErrorPanel.new()
 	ui_layer.add_child(error_panel)
+
+	update_panel = UpdatePanel.new()
+	update_panel.name = "UpdatePanel"
+	ui_layer.add_child(update_panel)
+	update_panel.install_requested.connect(_on_install_update_requested)
 
 	touch_controls = TouchControls.new()
 	ui_layer.add_child(touch_controls)
@@ -313,6 +321,79 @@ func _on_dialogue_choice_selected(choice_index: int) -> void:
 		error_panel.show_errors(choice_errors, [], "選項套用失敗")
 	_update_status()
 	_update_prompt()
+
+
+# ---------------------------------------------------------------------------
+# 自動更新（本體 APK + 內容 DATA）
+# ---------------------------------------------------------------------------
+
+## 啟動時自動檢查更新；不阻擋遊戲，失敗只顯示訊息。
+func _setup_auto_updates() -> void:
+	if update_checker != null:
+		return
+	update_checker = UpdateChecker.new()
+	update_checker.name = "UpdateChecker"
+	add_child(update_checker)
+	update_checker.status_changed.connect(_on_update_status)
+	update_checker.app_update_ready.connect(_on_app_update_ready)
+	update_checker.app_update_result.connect(_on_app_update_result)
+	update_checker.data_update_result.connect(_on_data_update_result)
+	update_checker.check_finished.connect(_on_update_check_finished)
+	update_checker.start()
+
+
+func _on_update_status(text: String) -> void:
+	if update_panel != null:
+		update_panel.show_status(text)
+
+
+func _on_app_update_ready(info: Dictionary) -> void:
+	if update_panel != null:
+		update_panel.show_status("更新已下載（%s），開啟安裝程式…" % String(info.get("version", "")))
+
+
+func _on_app_update_result(result: Dictionary) -> void:
+	var path := String(result.get("path", ""))
+	if bool(result.get("ok", false)):
+		if update_panel != null:
+			update_panel.show_install_button(path, "請在系統視窗完成安裝")
+		return
+	var message := String(result.get("error", "安裝失敗"))
+	if update_panel != null:
+		update_panel.show_install_button(path, message + "（點此重試）")
+	if hud != null:
+		hud.show_notice(message, 6.0)
+
+
+func _on_data_update_result(result: Dictionary) -> void:
+	if bool(result.get("ok", false)):
+		if hud != null:
+			hud.show_notice("內容已更新至 %s，下次啟動生效" % String(result.get("version", "")), 6.0)
+		if update_panel != null:
+			update_panel.show_status("內容已更新（下次啟動生效）")
+	else:
+		if hud != null:
+			hud.show_notice("內容更新失敗，維持現有內容", 5.0)
+
+
+func _on_update_check_finished() -> void:
+	if update_panel == null:
+		return
+	if not update_panel.has_install_action():
+		update_panel.hide_panel()
+
+
+func _on_install_update_requested(path: String) -> void:
+	var result := AndroidInstaller.install_apk(path)
+	if bool(result.get("ok", false)):
+		if update_panel != null:
+			update_panel.show_status("請在系統視窗完成安裝")
+	else:
+		var message := String(result.get("error", "無法開啟安裝程式"))
+		if update_panel != null:
+			update_panel.show_install_button(path, message + "（點此重試）")
+		if hud != null:
+			hud.show_notice(message, 6.0)
 
 
 func _sync_touch_blocking() -> void:

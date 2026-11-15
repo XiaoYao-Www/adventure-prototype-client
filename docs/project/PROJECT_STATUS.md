@@ -1,12 +1,13 @@
 # 專案狀態（權威）
 
 > 本文件是專案唯一權威狀態摘要。工作區 `STATE/` 僅保留指向此處的說明。
-> 最後更新：2026-11-16（Asia/Taipei），依手機回饋修正觸控與橫向後重建 APK。
+> 最後更新：2026-11-16（Asia/Taipei），v0.2.0：自動更新（本體＋內容）與 GitHub Release 自動化。
 
 ## 目前階段
 
 - **`Phase 3 — 垂直切片 v0.1：完成（headless 驗證）`**
-- **`Phase 4 — Android debug APK：已建置並完成建置面驗證；第二版修正觸控與橫向，待實機複驗`**
+- **`Phase 4 — Android debug APK：已建置並完成建置面驗證`**
+- **`Phase 5 — 自動更新與 release 自動化：v0.2.0 完成，待實機驗證更新流程`**
 - 下一步：使用者在 Android 裝置安裝測試（這是目前唯一無法由 DSH 完成的驗收）。
 
 ## 專案方向（已確認）
@@ -34,8 +35,13 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 - **Android 可操作性（第二版）**：觸控改為自繪＋手動命中測試（不依賴 Control 佈局），
   方向鍵可按住連走、世界可滑動轉向、輕點互動；存檔／讀檔按鈕；對話開啟時不攔截對話框點擊。
   螢幕方向改為**橫向**（sensor landscape）。第一版實機回報「沒有有效操作」，此版尚未實機複驗。
-- **APK（第二版）**：`app_base_git/releases/android/adventure-prototype-0.1.0-debug.apk`
-  （37,310,532 bytes、SHA-256 `8707ce53…1b62`、debug 簽章、arm64-v8a、minSdk 24、橫向）。
+- **APK（v0.2.0）**：`app_base_git/releases/android/adventure-prototype-0.2.0-debug.apk`
+  （37,340,085 bytes、SHA-256 `eeb661af…6d17`、versionCode 2、debug 簽章、arm64-v8a、minSdk 24、橫向）。
+- **自動更新（v0.2.0）**：啟動檢查 GitHub Releases 的 `latest.json` → 下載 APK → 驗 sha256/size →
+  透過 AndroidRuntime/FileProvider 開啟系統安裝程式；內容則檢查 `latest_data.json` →
+  下載內容包 → 驗證 → 安裝到 `user://content_packs/`（下次啟動生效，失敗保留舊版）。
+- **Release 自動化**：推送 `v*` tag 由 `.github/workflows/release.yml` 建立 GitHub Release
+  並上傳 APK＋`latest.json`；內容 repo 推送 `data-v*` 由 `release-data.yml` 建立內容 release。
 - **仍未驗證**：實機安裝／啟動／畫面／中文渲染／觸控手感／音效；Windows 執行。
 
 ## 已驗證能力（實際命令與結果）
@@ -47,7 +53,7 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 | `node tools/build_content_manifest.mjs ../app_data_git --check` | **MANIFEST OK**（4525 bytes） |
 | `node tools/sync_content_bundle.mjs` | **BUNDLE OK**（res://content = game-content 0.1.0 快照） |
 | Godot `--import` | exit 0、無 GDScript 錯誤 |
-| Godot headless 測試 | **TESTS OK 300/300**（內容、格子、對話、存檔、portal、觸控命中／連走／滑動、CJK 字型） |
+| Godot headless 測試 | **TESTS OK 332/332**（內容、格子、對話、存檔、portal、觸控、CJK 字型、更新資訊解析、內容包安裝／回滾） |
 | 主場景 headless | exit 0、`map_start_village` 玩家 `(3,6)` |
 | 缺內容容錯 | `E_NO_MANIFEST`＋ErrorPanel、不崩潰 |
 | APK 匯出（debug） | 成功；zipalign → apksigner → verify 全通過 |
@@ -55,7 +61,7 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 | `aapt2 dump badging` | package/version/minSdk/targetSdk/native-code 見 `releases/android/BUILD_INFO.md` |
 | `zipalign -c -v 4` | Verification successful |
 | APK 內 `assets/content/` 抽出驗證 | CONTENT OK（0 error） |
-| `bash tools/checks.sh`（工作區整合腳本） | 7 步全通過（含 APK 簽章與 SHA-256 比對） |
+| `bash tools/checks.sh`（工作區整合腳本） | 7 步全通過（含 APK 簽章與 SHA-256 與 BUILD_INFO 比對） |
 
 ## 內容包與內建快照
 

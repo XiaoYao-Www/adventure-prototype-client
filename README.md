@@ -4,7 +4,7 @@ Android 優先、2D、格子式移動的冒險探索 RPG 遊戲本體。
 本倉庫只放**程式、場景、UI、輸入、規則、內容載入器、存檔與測試**；
 世界、地圖、事件、NPC、物品等內容放在另一個倉庫 `game-content`（工作區 `../app_data_git/`）。
 
-目前版本：**0.1.0（第一個垂直切片）**。
+目前版本：**0.2.0（自動更新／release 管線）**。
 
 ## 本輪已實作（v0.1）
 
@@ -24,7 +24,9 @@ Android 優先、2D、格子式移動的冒險探索 RPG 遊戲本體。
   Camera2D 整數 3x 縮放跟隨玩家。
 - 觸控輸入：自繪方向鍵（可按住連走）＋互動＋存檔／讀檔；世界區域可滑動轉向與輕點互動。Android/mobile 顯示、桌機隱藏；對話開啟時不攔截對話框點擊。
 - 畫面：橫向遊玩（sensor landscape，左右橫置皆可）。
-- Headless 測試：300 項斷言（fixtures + 真實 game-content，實測 300/300）。
+- Headless 測試：332 項斷言（fixtures + 真實 game-content，實測 332/332）。
+- 自動更新：啟動時檢查 GitHub Releases 的本體更新（下載 APK→驗 sha256→開啟系統安裝）與內容更新（下載內容包→驗證→user:// 安裝，下次啟動生效）。
+- 發布：推送 `v*` tag 由 GitHub Actions 自動建立 release 並附上 APK 與 `update/latest.json`。
 
 ## 目錄結構
 
@@ -121,12 +123,12 @@ timeout 120 "$G" --headless --path . --script res://tests/run_tests.gd \
 
 ## Android APK（v0.1，debug 簽章）
 
-- 成品：[`releases/android/adventure-prototype-0.1.0-debug.apk`](releases/android/adventure-prototype-0.1.0-debug.apk)
+- 成品：[`releases/android/adventure-prototype-0.2.0-debug.apk`](releases/android/adventure-prototype-0.2.0-debug.apk)
   （約 35.6 MiB；建置資訊與 SHA-256 見 `releases/android/BUILD_INFO.md`）。
 - 套件：`com.dsh.adventureprototype`、versionCode 1、versionName 0.1.0、minSdk 24、targetSdk 36、**arm64-v8a only**。
 - 螢幕方向：橫向（sensor landscape）。
 - **debug 簽章**（CN=Android Debug），只供安裝測試，不可用於商店發布。
-- 安裝：`adb install -r releases/android/adventure-prototype-0.1.0-debug.apk`
+- 安裝：`adb install -r releases/android/adventure-prototype-0.2.0-debug.apk`
   （Android 7.0 以上、arm64 裝置）。
 - 本輪**未在實機或模擬器安裝驗證**（本環境無 Android 裝置）；觸控按鈕已實作但未經真機操作測試。
 - 重建：見 `docs/BUILD.md`，或工作區 `tools/build_android.sh`。

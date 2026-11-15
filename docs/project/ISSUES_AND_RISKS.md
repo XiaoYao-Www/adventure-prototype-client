@@ -27,3 +27,10 @@
 | R-023 | 素材 | Items16 無語意檔名／對照表，1244 張圖示尚未逐張語意分類 | 低 | open | 需要時用聯絡表定位編號再建立 mapping；不要用編號猜類型。 |
 
 | R-024 | 遠端 | GitHub 推送 | 中 | **resolved** | 2026-11-16 首次推送成功：client `45b2b34`、data `494eb0e`；`git ls-remote` 與 API 驗證一致。 |
+
+| R-025 | 簽章 | 自動更新要求新 APK 與已安裝版本同簽章；目前用工作區 debug keystore，若遺失或換機器重建會導致更新無法覆蓋安裝 | 高 | open | 備份 keystore；正式發布前建立受控 release keystore（由使用者持有）並更新流程 |
+| R-026 | 可用性 | Android 不允許靜默安裝；首次需允許「安裝未知的應用程式」，之後系統仍顯示安裝確認 | 中 | accepted（平台限制） | UI 已有提示與設定頁跳轉；文件說明 |
+| R-027 | 驗證 | 自動更新下載／系統安裝／內容更新流程未在實機驗證 | 高 | open | 實機安裝 v0.2.0 後回報 logcat 與畫面 |
+| R-028 | 行為 | 內容更新在下次啟動才生效（非熱重載） | 低 | accepted（設計取捨） | 未來可做熱重載 |
+| R-029 | 發布 | GitHub repo 與 release 均為公開，含 APK；需使用者決定是否改私有 | 中 | open | 使用者決定；deploy key 在私有 repo 仍可用 |
+| R-030 | CI | Release 依賴 GitHub Actions 與其 token 權限；若 Actions 被停用或權限為唯讀則無法自動發布 | 中 | open | 首次 tag 後檢查 Actions 結果；必要時調整 repo/workflow 權限 |
