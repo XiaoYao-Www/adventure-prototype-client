@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "item_boot_herb_001",
+  "name": "範例藥草",
+  "category": "consumable",
+  "description": "內建範例物品，無實際用途。",
+  "stack_limit": 99
+}

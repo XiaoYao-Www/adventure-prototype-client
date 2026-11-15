@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "id": "event_broken_002",
+  "kind": "dialogue",
+  "trigger": {"map_id": "map_broken", "entity_id": "npc_broken_001"},
+  "repeatable": true,
+  "lines": [{"speaker_id": "npc_broken_001", "text": "trigger 不一致測試。"}],
+  "choices": []
+}

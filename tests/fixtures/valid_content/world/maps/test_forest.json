@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "id": "map_test_forest",
+  "name": "測試森林",
+  "size": {"width": 8, "height": 6},
+  "tile_size": 16,
+  "tiles": [
+    "########",
+    "#......#",
+    "#..t...#",
+    "#......#",
+    "#......#",
+    "########"
+  ],
+  "legend": {
+    "#": {"tile": "wall", "walkable": false},
+    ".": {"tile": "grass", "walkable": true},
+    "t": {"tile": "tree", "walkable": false}
+  },
+  "spawn": {"grid": [1, 1]},
+  "entities": [
+    {
+      "id": "chest_test_001",
+      "type": "object",
+      "grid": [5, 1],
+      "display_key": "chest",
+      "interaction": {"kind": "event", "event_id": "event_test_chest_001"}
+    }
+  ],
+  "portals": [
+    {
+      "id": "portal_test_forest_to_village",
+      "grid": [1, 4],
+      "target_map_id": "map_test_village",
+      "target_grid": [8, 5]
+    }
+  ]
+}

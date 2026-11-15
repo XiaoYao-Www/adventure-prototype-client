@@ -1,0 +1,40 @@
+{
+  "content_id": "fixture_broken_refs",
+  "content_version": "0.1.0",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "characters/npcs/npc_broken_001.json",
+      "sha256": "b93bc21ec3e3b8d7b677ccd56b6f6fa7ae3ffa24307318ffd4c3290b61a3755d",
+      "size": 102
+    },
+    {
+      "path": "events/event_broken_001.json",
+      "sha256": "b4e1d102276425bb2bffb0f6e3ddd23951fd5ef72c73107fbd12006ff11074e6",
+      "size": 525
+    },
+    {
+      "path": "events/event_broken_002.json",
+      "sha256": "5ade22ff44967975938900b8ae630df7a1ae8aa36cecff576797825a6850680e",
+      "size": 270
+    },
+    {
+      "path": "items/item_ok_001.json",
+      "sha256": "a4d3c411884c9c6965ed6c23ea4bbc6fedea04f7145899f623fde4a37a9e4a24",
+      "size": 123
+    },
+    {
+      "path": "world/maps/map_broken.json",
+      "sha256": "e2837bff6ab85646444a3d0392756cecb39cf045803387b0ae9c6d1c12b7cc1b",
+      "size": 701
+    },
+    {
+      "path": "world/regions/region_broken_001.json",
+      "sha256": "cd7d53b54421b4a2d904a460dcff7c8e604cea55a19b4cc3b478baca1e591de8",
+      "size": 138
+    }
+  ],
+  "manifest_schema": 1,
+  "min_game_version": "0.1.0",
+  "schema_version": 1
+}

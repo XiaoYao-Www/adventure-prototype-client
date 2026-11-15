@@ -1,0 +1,35 @@
+{
+  "content_id": "fixture_unknown_effect",
+  "content_version": "0.1.0",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "characters/npcs/npc_unknown_001.json",
+      "sha256": "9a7dd0ed3ed9ed0782fbe8044bd2b839996adca5544b4f7e4353392b6dcd4590",
+      "size": 103
+    },
+    {
+      "path": "events/event_unknown_effect_001.json",
+      "sha256": "05a7f6d35b33bf2801e283ee9bdf7822a8c4f41c99baa686debb84c0f7b630bb",
+      "size": 562
+    },
+    {
+      "path": "items/item_unknown_001.json",
+      "sha256": "7f7091128543ebac8d026e73c858e8c000a5ffe330de4e1805e621a4c6a3fb03",
+      "size": 134
+    },
+    {
+      "path": "world/maps/map_effect_test.json",
+      "sha256": "374b794d758a1d53d5c24fa614e9caeb5424dcf1b4db637c2e4753bff83557d3",
+      "size": 575
+    },
+    {
+      "path": "world/regions/region_effect_test.json",
+      "sha256": "b577f232d03a667965c5d2f5075439cd2de3b44fda95a1667faf18f4c54bfcc8",
+      "size": 122
+    }
+  ],
+  "manifest_schema": 1,
+  "min_game_version": "0.1.0",
+  "schema_version": 1
+}

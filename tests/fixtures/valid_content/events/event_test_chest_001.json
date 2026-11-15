@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "event_test_chest_001",
+  "kind": "dialogue",
+  "trigger": {"map_id": "map_test_forest", "entity_id": "chest_test_001"},
+  "repeatable": false,
+  "lines": [
+    {"speaker_id": "player", "text": "舊木箱，沒有鎖。"},
+    {"speaker_id": "player", "text": "裡面有兩株藥草。"}
+  ],
+  "choices": [
+    {
+      "id": "take_herb",
+      "text": "拿走藥草",
+      "effects": [
+        {"type": "give_item", "item_id": "item_test_herb_001", "qty": 2},
+        {"type": "set_flag", "flag": "flag_chest_opened", "value": true}
+      ]
+    }
+  ]
+}

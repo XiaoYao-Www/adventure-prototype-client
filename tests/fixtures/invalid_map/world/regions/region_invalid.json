@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "id": "region_invalid",
+  "name": "幾何錯誤區域",
+  "map_ids": ["map_invalid"]
+}

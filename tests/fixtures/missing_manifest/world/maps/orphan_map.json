@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "id": "map_orphan",
+  "name": "孤兒地圖",
+  "size": {"width": 5, "height": 5},
+  "tile_size": 16,
+  "tiles": ["#####", "#...#", "#...#", "#...#", "#####"],
+  "legend": {
+    "#": {"tile": "wall", "walkable": false},
+    ".": {"tile": "grass", "walkable": true}
+  },
+  "spawn": {"grid": [1, 1]},
+  "entities": [],
+  "portals": []
+}

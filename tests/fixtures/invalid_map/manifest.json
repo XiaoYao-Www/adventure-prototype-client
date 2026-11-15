@@ -1,0 +1,20 @@
+{
+  "content_id": "fixture_invalid_map",
+  "content_version": "0.1.0",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "world/maps/map_invalid.json",
+      "sha256": "38adcfccc91d517f0830208b6b1ac05bafd150c4f0e55d1d7186fd3f41ff5fbc",
+      "size": 719
+    },
+    {
+      "path": "world/regions/region_invalid.json",
+      "sha256": "bcf28d4e041fa2e8e7c1a64e477c43ef0414d631dbc61a705792d337f1b19371",
+      "size": 114
+    }
+  ],
+  "manifest_schema": 1,
+  "min_game_version": "0.1.0",
+  "schema_version": 1
+}

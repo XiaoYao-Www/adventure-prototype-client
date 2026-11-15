@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "event_unknown_effect_001",
+  "kind": "dialogue",
+  "trigger": {"map_id": "map_effect_test", "entity_id": "npc_unknown_001"},
+  "repeatable": true,
+  "lines": [{"speaker_id": "npc_unknown_001", "text": "測試未知效果。"}],
+  "choices": [
+    {
+      "id": "bad_type",
+      "text": "未知效果",
+      "effects": [{"type": "teleport_player", "grid": [1, 1]}]
+    },
+    {
+      "id": "bad_param",
+      "text": "錯誤參數",
+      "effects": [{"type": "give_item", "item_id": "item_unknown_001", "qty": 0}]
+    }
+  ]
+}

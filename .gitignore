@@ -1,0 +1,28 @@
+# Godot 匯入快取與建置產物
+.godot/
+*.godot.import
+export/
+build/
+dist/
+
+# 匯出成品（不可提交）
+*.apk
+*.aab
+*.pck
+*.zip
+
+# 玩家存檔與本機狀態（Godot 的 user:// 不在倉庫內，仍預防誤放）
+save_*.json
+*.save
+user/
+
+# 暫存與作業系統雜項
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# 編輯器/IDE 個人設定
+.idea/
+.vscode/
+*.swp

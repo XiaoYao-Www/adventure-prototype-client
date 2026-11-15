@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "id": "item_unknown_001",
+  "name": "效果測試道具",
+  "category": "consumable",
+  "stack_limit": 9
+}

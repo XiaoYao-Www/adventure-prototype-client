@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "id": "event_broken_001",
+  "kind": "dialogue",
+  "trigger": {"map_id": "map_missing_trigger", "entity_id": "entity_missing"},
+  "repeatable": true,
+  "lines": [
+    {"speaker_id": "npc_broken_001", "text": "存在的說話者。"},
+    {"speaker_id": "npc_missing_speaker", "text": "不存在的說話者。"}
+  ],
+  "choices": [
+    {
+      "id": "give_missing",
+      "text": "給不存在的道具",
+      "effects": [{"type": "give_item", "item_id": "item_missing_001", "qty": 1}]
+    }
+  ]
+}

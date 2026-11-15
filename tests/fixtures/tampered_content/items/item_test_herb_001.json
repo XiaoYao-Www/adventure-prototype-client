@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "id": "item_test_herb_001",
+  "name": "測試藥草",
+  "category": "consumable",
+  "description": "測試用道具。",
+  "stack_limit": 99
+}

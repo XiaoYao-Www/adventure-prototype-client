@@ -1,0 +1,20 @@
+{
+  "content_id": "fixture_unsafe_paths",
+  "content_version": "0.1.0",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "world/maps/map_unsafe.json",
+      "sha256": "0d29402e8d14363b2232091b551de4ede073273afab50c746ce2cc48ee27c8b7",
+      "size": 368
+    },
+    {
+      "path": "../outside.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "size": 0
+    }
+  ],
+  "manifest_schema": 1,
+  "min_game_version": "0.1.0",
+  "schema_version": 1
+}

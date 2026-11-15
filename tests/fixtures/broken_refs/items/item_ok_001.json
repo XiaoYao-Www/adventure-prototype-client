@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "id": "item_ok_001",
+  "name": "存在道具",
+  "category": "consumable",
+  "stack_limit": 9
+}

@@ -1,0 +1,45 @@
+{
+  "content_id": "fixture_valid",
+  "content_version": "0.1.0",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "characters/npcs/npc_test_elder_001.json",
+      "sha256": "5e8d968b1598bf49d87bcf92215a7cb54736d39bb959d6847f0aca2050c808a5",
+      "size": 196
+    },
+    {
+      "path": "events/event_test_chest_001.json",
+      "sha256": "952a5030dd4c4544d4af8c7fdde0b3515b32e323c2e3e94b24edbfaeff208ae6",
+      "size": 588
+    },
+    {
+      "path": "events/event_test_elder_001.json",
+      "sha256": "1d9d8239d36763535d8cf1948d64ad1a6d3384721be1dcaf59ddb69679a8a5e3",
+      "size": 741
+    },
+    {
+      "path": "items/item_test_herb_001.json",
+      "sha256": "312203421fd391cb582de2a3b22155efc013a7146e4a49a89855d5b0ee8e6a83",
+      "size": 170
+    },
+    {
+      "path": "world/maps/test_forest.json",
+      "sha256": "85aca8cf0008331f49175c6b4dc5f7accc5b87a029121bcaa8b1e138006a5b2f",
+      "size": 817
+    },
+    {
+      "path": "world/maps/test_village.json",
+      "sha256": "26e2420697297fd7e114d5208113cddecd819f174cf2bd0fee713f48e2183757",
+      "size": 898
+    },
+    {
+      "path": "world/regions/region_test_001.json",
+      "sha256": "3f2458d6708c0654e5b2a09119814845ccbf58eff601061a36a7238cad2eda0b",
+      "size": 218
+    }
+  ],
+  "manifest_schema": 1,
+  "min_game_version": "0.1.0",
+  "schema_version": 1
+}

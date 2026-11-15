@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "id": "region_broken_001",
+  "name": "引用測試區域",
+  "map_ids": ["map_broken", "map_missing_region"]
+}

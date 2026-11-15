@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "id": "map_invalid",
+  "name": "幾何錯誤地圖",
+  "size": {"width": 5, "height": 4},
+  "tile_size": 16,
+  "tiles": ["#####", "#.t#"],
+  "legend": {
+    "#": {"tile": "wall", "walkable": false},
+    ".": {"tile": "grass", "walkable": true},
+    "x": {"tile": "path", "walkable": true}
+  },
+  "spawn": {"grid": [9, 9]},
+  "entities": [
+    {
+      "id": "entity_on_wall",
+      "type": "object",
+      "grid": [0, 0],
+      "display_key": "chest",
+      "interaction": {"kind": "event", "event_id": "event_missing_001"}
+    }
+  ],
+  "portals": [
+    {
+      "id": "portal_on_wall",
+      "grid": [0, 0],
+      "target_map_id": "map_missing_portal",
+      "target_grid": [0, 0]
+    }
+  ]
+}

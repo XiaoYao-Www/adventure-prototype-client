@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "id": "region_test_001",
+  "name": "測試區域",
+  "map_ids": ["map_test_village", "map_test_forest"],
+  "notes": "fixture：合法內容，用於內容載入器與遊戲流程測試。"
+}

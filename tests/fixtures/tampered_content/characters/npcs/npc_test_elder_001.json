@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "id": "npc_test_elder_001",
+  "name": "測試村長",
+  "role": "長老",
+  "short_description": "測試用 NPC。",
+  "is_adult": true,
+  "speech_style": "簡短。"
+}

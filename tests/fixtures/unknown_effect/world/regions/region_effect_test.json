@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "id": "region_effect_test",
+  "name": "效果測試區域",
+  "map_ids": ["map_effect_test"]
+}

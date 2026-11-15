@@ -1,0 +1,57 @@
+{
+  "generated": true,
+  "generated_by": "tools/generate_placeholder_tiles.mjs",
+  "version": 1,
+  "tile_size": 16,
+  "columns": 8,
+  "rows": 1,
+  "image": "placeholder_tiles.png",
+  "image_size": {
+    "width": 128,
+    "height": 16
+  },
+  "tiles": [
+    {
+      "index": 0,
+      "key": "grass",
+      "kind": "terrain"
+    },
+    {
+      "index": 1,
+      "key": "path",
+      "kind": "terrain"
+    },
+    {
+      "index": 2,
+      "key": "wall",
+      "kind": "terrain"
+    },
+    {
+      "index": 3,
+      "key": "water",
+      "kind": "terrain"
+    },
+    {
+      "index": 4,
+      "key": "tree",
+      "kind": "terrain"
+    },
+    {
+      "index": 5,
+      "key": "npc",
+      "kind": "entity"
+    },
+    {
+      "index": 6,
+      "key": "chest",
+      "kind": "entity"
+    },
+    {
+      "index": 7,
+      "key": "player",
+      "kind": "entity"
+    }
+  ],
+  "license": "本檔案由本專案自行生成，無第三方權利；不得聲稱為第三方素材。",
+  "note": "暫代視覺，正式美術尚未選定；不得用於對外宣稱最終風格。"
+}

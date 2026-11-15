@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "id": "npc_broken_001",
+  "name": "引用測試 NPC",
+  "is_adult": true
+}

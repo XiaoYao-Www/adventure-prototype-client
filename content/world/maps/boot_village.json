@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "id": "map_boot_village",
+  "name": "內建範例村落",
+  "size": {
+    "width": 10,
+    "height": 7
+  },
+  "tile_size": 16,
+  "tiles": [
+    "##########",
+    "#........#",
+    "#..t.....#",
+    "#........#",
+    "#....p...#",
+    "#....p...#",
+    "##########"
+  ],
+  "legend": {
+    "#": {
+      "tile": "wall",
+      "walkable": false
+    },
+    ".": {
+      "tile": "grass",
+      "walkable": true
+    },
+    "t": {
+      "tile": "tree",
+      "walkable": false
+    },
+    "p": {
+      "tile": "path",
+      "walkable": true
+    }
+  },
+  "spawn": {
+    "grid": [
+      1,
+      1
+    ]
+  },
+  "entities": [
+    {
+      "id": "npc_boot_guide_001",
+      "type": "npc",
+      "grid": [
+        3,
+        3
+      ],
+      "display_key": "npc_elder",
+      "interaction": {
+        "kind": "event",
+        "event_id": "event_boot_guide_001"
+      }
+    }
+  ],
+  "portals": [
+    {
+      "id": "portal_boot_village_to_forest",
+      "grid": [
+        8,
+        5
+      ],
+      "target_map_id": "map_boot_forest",
+      "target_grid": [
+        2,
+        4
+      ]
+    }
+  ]
+}
