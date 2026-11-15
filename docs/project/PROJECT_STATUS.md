@@ -19,8 +19,8 @@
 
 | 規格名稱 | 實際路徑 | 角色 | branch | 首個 commit |
 | --- | --- | --- | --- | --- |
-| `game-client` | `/workspace/自動遊戲開發/app_base_git` | 程式、場景、測試、建置、專案文件 | `master` | 2026-11-16 建立（見 `git log`） |
-| `game-content` | `/workspace/自動遊戲開發/app_data_git` | 內容資料、schema、可發布內容來源 | `master` | 2026-11-16 建立（見 `git log`） |
+| `game-client` | `/workspace/自動遊戲開發/app_base_git` | 程式、場景、測試、建置、專案文件 | `master` | 首個 commit `869b110`（2026-11-16） |
+| `game-content` | `/workspace/自動遊戲開發/app_data_git` | 內容資料、schema、可發布內容來源 | `master` | 首個 commit `7100d08`（2026-11-16） |
 
 兩倉庫皆無 remote、未 push（依專案規則不得自動推送到遠端）。
 

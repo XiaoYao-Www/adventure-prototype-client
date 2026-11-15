@@ -14,7 +14,7 @@
 ## 目前在哪裡
 
 - 階段：**Phase 3 完成（v0.1 垂直切片 headless 驗證通過 265/265）**。
-- 雙倉庫皆已在 2026-11-16 建立首個本地 commit；`master`、無 remote、未 push。
+- 雙倉庫皆已在 2026-11-16 建立首個本地 commit：client `869b110`、content `7100d08`；`master`、無 remote、未 push。
 - `bash /workspace/自動遊戲開發/tools/checks.sh` 可重跑 6 步整合檢查（內容工具測試、內容驗證、
   manifest 一致性、atlas 可重現、Godot 匯入、Godot headless 測試）。
 - 尚未驗證：畫面外觀、操作手感、Windows 執行、Android APK／實機、觸控、音效。
