@@ -10,8 +10,6 @@ extends SceneTree
 
 const FIXTURES_DEFAULT := "res://tests/fixtures"
 # 與 touch_controls.gd 的常數一致（測試按住連走的時間點）
-const HOLD_DELAY_TEST := 0.28
-const REPEAT_INTERVAL_TEST := 0.14
 const VALID_FIXTURE := "valid_content"
 const SAVE_TEST_PATH := "user://test_save_roundtrip.json"
 const SAVE_BAD_VERSION_PATH := "user://test_save_bad_version.json"
@@ -278,7 +276,7 @@ func _test_content_bootstrap() -> void:
 	_print_repo(repo, "res://content")
 	th.check_true(repo.is_ok(), "內建內容可載入")
 	th.check_eq(repo.errors.size(), 0, "內建內容沒有錯誤")
-	th.check_eq(repo.maps.size(), 2, "內建內容 2 張地圖")
+	th.check_eq(repo.maps.size(), 5, "內建內容 5 張地圖")
 
 
 func _test_content_tampered() -> void:
@@ -807,6 +805,9 @@ func _test_main_scene() -> void:
 		th.check_false(error_panel.is_showing(), "內容正常時不顯示 ErrorPanel")
 		var hud: Hud = instance.get("hud")
 		th.check_false(hud.status_text().is_empty(), "HUD 狀態列有內容")
+		var title: TitleScreen = instance.get("title_screen")
+		th.check_true(title != null, "標題畫面建立")
+		th.check_true(title != null and title.visible, "啟動時顯示標題畫面")
 	else:
 		var error_panel: ErrorPanel = instance.get("error_panel")
 		th.check_true(error_panel.is_showing(), "內容不可用時顯示 ErrorPanel（不崩潰）")
@@ -841,16 +842,11 @@ func _test_touch_controls() -> void:
 	controls._input(_touch_event(rects["up"].get_center(), false))
 	th.check_eq(seen.size(), 1, "放開不重複觸發")
 
-	# 按住連走
+	# 按下只立即移動一次；連續移動由 main 每幀輪詢 get_held_direction() 實現
 	seen.clear()
-	controls._input(_touch_event(rects["right"].get_center(), true))
-	var after_press: int = seen.size()
-	controls._process(HOLD_DELAY_TEST + 0.001)
-	controls._process(REPEAT_INTERVAL_TEST)
-	th.check_true(seen.size() > after_press, "按住方向鍵會連走")
-	if seen.size() > 0:
-		th.check_eq(seen[seen.size() - 1], Vector2i.RIGHT, "連走方向正確")
-	controls._input(_touch_event(rects["right"].get_center(), false))
+	controls._input(_touch_event((rects["right"] as Rect2).get_center(), true))
+	th.check_eq(seen.size(), 1, "按下方向鍵立刻移動一格")
+	controls._input(_touch_event((rects["right"] as Rect2).get_center(), false))
 
 	# 動作按鈕
 	var counts: Dictionary = {"interact": 0, "save": 0, "load": 0}
@@ -883,12 +879,22 @@ func _test_touch_controls() -> void:
 	if seen.size() >= 1:
 		th.check_eq(seen[0], Vector2i.RIGHT, "滑動方向正確（右）")
 
-	# 對話中不攔截
+	# 對話中仍可用「互動」鍵推進
 	controls.set_input_blocked(true)
+	var blocked_interact: Array = [0]
+	controls.interact_pressed.connect(func() -> void: blocked_interact[0] += 1)
+	controls._input(_touch_event((rects["interact"] as Rect2).get_center(), true))
+	th.check_eq(blocked_interact[0], 1, "對話中互動鍵仍可推進對話")
 	seen.clear()
 	controls._input(_touch_event(rects["down"].get_center(), true))
-	th.check_eq(seen.size(), 0, "對話中觸控控制不移動")
+	th.check_eq(seen.size(), 0, "對話中方向鍵不移動")
 	controls.set_input_blocked(false)
+
+	# 按住方向（main 輪詢連續移動用）
+	controls._input(_touch_event((rects["left"] as Rect2).get_center(), true))
+	th.check_eq(controls.get_held_direction(), Vector2i.LEFT, "按住方向鍵會記錄方向")
+	controls._input(_touch_event((rects["left"] as Rect2).get_center(), false))
+	th.check_eq(controls.get_held_direction(), Vector2i.ZERO, "放開方向鍵會清除")
 
 	# 隱藏時不處理輸入
 	controls.set_visibility_override(false)
@@ -1102,11 +1108,11 @@ func _test_real_content() -> void:
 	if not repo.is_ok():
 		return
 	th.check_eq(repo.content_id, "base_world", "content_id base_world")
-	th.check_eq(repo.content_version, "0.1.0", "content_version 0.1.0")
-	th.check_eq(repo.maps.size(), 2, "真實內容 2 張地圖")
-	th.check_eq(repo.npcs.size(), 1, "真實內容 1 個 NPC")
-	th.check_eq(repo.items.size(), 1, "真實內容 1 個道具")
-	th.check_eq(repo.events.size(), 2, "真實內容 2 個事件")
+	th.check_eq(repo.content_version, "0.2.0", "content_version 0.2.0")
+	th.check_eq(repo.maps.size(), 5, "真實內容 5 張地圖")
+	th.check_eq(repo.npcs.size(), 6, "真實內容 6 個 NPC")
+	th.check_eq(repo.items.size(), 6, "真實內容 6 個道具")
+	th.check_eq(repo.events.size(), 14, "真實內容 14 個事件")
 	th.check_eq(repo.get_start_map_id(), "map_start_village", "真實內容起始地圖")
 	var village: Dictionary = repo.get_map("map_start_village")
 	th.check_eq(village.size(), 9, "地圖資料欄位數")

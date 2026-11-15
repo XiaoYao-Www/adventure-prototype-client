@@ -9,7 +9,7 @@ extends Node
 ## 內容目錄解析順序：CLI `--content-dir=` > ProjectSettings `game/content_dir`
 ## > res://content。缺少內容時顯示 ErrorPanel，不崩潰、不進入遊戲。
 
-const GAME_VERSION := "0.2.1"
+const GAME_VERSION := "0.3.0"
 const ATLAS_TEXTURE_PATH := "res://assets/generated/placeholder_tiles.png"
 const ATLAS_META_PATH := "res://assets/generated/placeholder_tiles.json"
 const CAMERA_ZOOM := 3
@@ -28,6 +28,7 @@ var error_panel: ErrorPanel
 var touch_controls: TouchControls
 var update_panel: UpdatePanel
 var update_checker: UpdateChecker
+var title_screen: TitleScreen
 var ui_layer: CanvasLayer
 
 var atlas_texture: Texture2D
@@ -71,6 +72,7 @@ func _start_game() -> void:
 	_on_map_changed(session.state.current_map_id, session.state.player_grid)
 	print("[main] 遊戲就緒：地圖 %s，玩家 %s" % [session.state.current_map_id, str(session.state.player_grid)])
 	_setup_auto_updates()
+	_show_title()
 
 
 # ---------------------------------------------------------------------------
@@ -96,6 +98,15 @@ func _build_ui() -> void:
 	update_panel.name = "UpdatePanel"
 	ui_layer.add_child(update_panel)
 	update_panel.install_requested.connect(_on_install_update_requested)
+
+	title_screen = TitleScreen.new()
+	title_screen.name = "TitleScreen"
+	ui_layer.add_child(title_screen)
+	title_screen.start_game.connect(_on_title_start_game)
+	title_screen.continue_game.connect(_on_title_continue_game)
+	title_screen.check_updates.connect(_on_title_check_updates)
+	title_screen.set_version(GAME_VERSION)
+	title_screen.close()
 
 	touch_controls = TouchControls.new()
 	ui_layer.add_child(touch_controls)
@@ -169,7 +180,46 @@ func _show_content_failure() -> void:
 # 輸入
 # ---------------------------------------------------------------------------
 
+func _title_active() -> bool:
+	return title_screen != null and title_screen.visible
+
+
+func _show_title() -> void:
+	if title_screen == null:
+		return
+	title_screen.set_version(GAME_VERSION)
+	title_screen.set_continue_available(FileAccess.file_exists(SaveManager.DEFAULT_SAVE_PATH))
+	title_screen.open()
+
+
+func _on_title_start_game() -> void:
+	if title_screen != null:
+		title_screen.close()
+	if hud != null:
+		hud.show_notice("冒險開始", 2.5)
+
+
+func _on_title_continue_game() -> void:
+	if not FileAccess.file_exists(SaveManager.DEFAULT_SAVE_PATH):
+		if hud != null:
+			hud.show_notice("尚無存檔", 3.0)
+		return
+	_load_game()
+	if title_screen != null:
+		title_screen.close()
+
+
+func _on_title_check_updates() -> void:
+	if update_checker != null:
+		update_checker.start()
+	else:
+		if hud != null:
+			hud.show_notice("更新元件尚未就緒", 3.0)
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if _title_active():
+		return
 	if error_panel != null and error_panel.is_showing() and event is InputEventKey:
 		var key_event: InputEventKey = event
 		if key_event.pressed and key_event.keycode == KEY_ESCAPE:
@@ -185,10 +235,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if session.is_in_dialogue():
 		_handle_dialogue_input(event)
-		return
-	var direction: Vector2i = _movement_direction(event)
-	if direction != Vector2i.ZERO:
-		_request_move(direction)
 		return
 	if event.is_action_pressed("interact"):
 		_request_interact()
@@ -217,6 +263,38 @@ func _handle_dialogue_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("interact"):
 		session.advance_dialogue()
+
+
+# ---------------------------------------------------------------------------
+# 連續移動（鍵盤按住／觸控方向鍵按住都由這裡輪詢）
+# ---------------------------------------------------------------------------
+
+func _process(_delta: float) -> void:
+	if not gameplay_ready or _title_active():
+		return
+	if session == null or player == null:
+		return
+	if session.is_in_dialogue() or player.is_moving:
+		return
+	var direction: Vector2i = _held_move_direction()
+	if direction != Vector2i.ZERO:
+		_request_move(direction)
+
+
+func _held_move_direction() -> Vector2i:
+	if Input.is_action_pressed("move_up"):
+		return Vector2i.UP
+	if Input.is_action_pressed("move_down"):
+		return Vector2i.DOWN
+	if Input.is_action_pressed("move_left"):
+		return Vector2i.LEFT
+	if Input.is_action_pressed("move_right"):
+		return Vector2i.RIGHT
+	if touch_controls != null and touch_controls.visible:
+		var touch_direction: Vector2i = touch_controls.get_held_direction()
+		if touch_direction != Vector2i.ZERO:
+			return touch_direction
+	return Vector2i.ZERO
 
 
 # ---------------------------------------------------------------------------
@@ -345,6 +423,8 @@ func _setup_auto_updates() -> void:
 func _on_update_status(text: String) -> void:
 	if update_panel != null:
 		update_panel.show_status(text)
+	if title_screen != null:
+		title_screen.set_status(text)
 
 
 func _on_app_update_ready(info: Dictionary) -> void:

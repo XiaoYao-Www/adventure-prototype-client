@@ -12,7 +12,7 @@ signal move_started(from_cell: Vector2i, to_cell: Vector2i)
 signal move_finished(to_cell: Vector2i)
 
 ## 每格移動動畫秒數；可在測試中調小。
-@export var move_duration: float = 0.12
+@export var move_duration: float = 0.09
 
 var grid_pos: Vector2i = Vector2i.ZERO
 var facing: Vector2i = Vector2i.DOWN

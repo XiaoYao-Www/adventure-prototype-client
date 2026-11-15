@@ -1,13 +1,14 @@
 # 專案狀態（權威）
 
 > 本文件是專案唯一權威狀態摘要。工作區 `STATE/` 僅保留指向此處的說明。
-> 最後更新：2026-11-16（Asia/Taipei），v0.2.0：自動更新（本體＋內容）與 GitHub Release 自動化。
+> 最後更新：2026-11-16（Asia/Taipei），v0.3.0：主頁面、對話可推進、連續移動、內容大擴充。
 
 ## 目前階段
 
 - **`Phase 3 — 垂直切片 v0.1：完成（headless 驗證）`**
 - **`Phase 4 — Android debug APK：已建置並完成建置面驗證`**
-- **`Phase 5 — 自動更新與 release 自動化：v0.2.0 完成，待實機驗證更新流程`**
+- **`Phase 5 — 自動更新與 release 自動化：v0.2.x 完成`**
+- **`Phase 6 — 玩法與內容大更新：v0.3.0（主頁面、對話操作、連續移動、5 地圖／6 NPC／14 事件）`**
 - 下一步：使用者在 Android 裝置安裝測試（這是目前唯一無法由 DSH 完成的驗收）。
 
 ## 專案方向（已確認）
@@ -35,8 +36,10 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 - **Android 可操作性（第二版）**：觸控改為自繪＋手動命中測試（不依賴 Control 佈局），
   方向鍵可按住連走、世界可滑動轉向、輕點互動；存檔／讀檔按鈕；對話開啟時不攔截對話框點擊。
   螢幕方向改為**橫向**（sensor landscape）。第一版實機回報「沒有有效操作」，此版尚未實機複驗。
-- **APK（v0.2.1）**：`app_base_git/releases/android/adventure-prototype-0.2.1-debug.apk`
-  （37,340,156 bytes、SHA-256 `4ec34e1e…b6fb`、versionCode 3、debug 簽章、arm64-v8a、minSdk 24、橫向）。
+- **APK（v0.3.0）**：`app_base_git/releases/android/adventure-prototype-0.3.0-debug.apk`
+  （37,363,165 bytes、SHA-256 `23bcb879…4040`、versionCode 4、debug 簽章、arm64-v8a、minSdk 24、橫向）。
+- **v0.3.0 修正／新增**：標題主頁面（開始／繼續／檢查更新）；對話中「互動」鍵與點擊畫面皆可推進；
+  按住方向鍵連續移動（main 每幀輪詢，移除舊 0.28 秒延遲）；內容擴充為 5 地圖、6 NPC、6 道具、14 事件。
 - **GitHub Releases（已自動發布並驗證）**：client `v0.2.0`、`v0.2.1`；data `data-v0.1.0`、`data-v0.1.1`。
   固定更新網址：
   - 本體 `https://github.com/XiaoYao-Www/adventure-prototype-client/releases/latest/download/latest.json`
@@ -64,7 +67,7 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 | Godot `--import` | exit 0、無 GDScript 錯誤 |
 | 更新資訊實際下載比對 | latest.json / latest_data.json / APK / 內容包 sha256 全部一致 |
 | GitHub Actions release | client v0.2.0、v0.2.1、data data-v0.1.0、data-v0.1.1 全部 success |
-| Godot headless 測試 | **TESTS OK 332/332**（內容、格子、對話、存檔、portal、觸控、CJK 字型、更新資訊解析、內容包安裝／回滾） |
+| Godot headless 測試 | **TESTS OK 336/336**（內容、格子、對話、存檔、portal、觸控、CJK 字型、更新資訊解析、內容包安裝／回滾） |
 | 主場景 headless | exit 0、`map_start_village` 玩家 `(3,6)` |
 | 缺內容容錯 | `E_NO_MANIFEST`＋ErrorPanel、不崩潰 |
 | APK 匯出（debug） | 成功；zipalign → apksigner → verify 全通過 |

@@ -274,3 +274,29 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
   - `releases/latest/download/latest_data.json` → content_version 0.1.1、zip sha256 `1f7b40ce…e11e` 與下載檔一致。
   - 註：GitHub 對 `/releases/latest/download/` 有數分鐘 CDN 快取；發布後立即抓可能拿到前一版，稍候即正確。
 - 內容 repo 0.1.1：村長對話加一句森林路況提示，manifest 重算、驗證器通過。
+
+## 2026-11-16（第三次回饋）— v0.3.0：主頁面、對話修正、連續移動、內容大擴充
+
+### 使用者回饋
+
+1. 互動與內容數量完全不夠。
+2. 與村長對話開啟後無法繼續（手機沒有 E 鍵）。
+3. 沒有主頁面，開啟直接進遊戲。
+4. 操控手感很卡。
+
+### 修正與實作
+
+- 對話推進：觸控「互動」鍵在對話中仍可用（不再整體封鎖觸控層）；點擊對話框也可推進；
+  只有選項畫面需點選項按鈕；提示文字同步更新。
+- 標題主頁 `scripts/ui/title_screen.gd`：開始遊戲／繼續遊戲（有存檔才可用）／檢查更新／版本。
+- 移動手感：main 每幀輪詢鍵盤與觸控按住方向 → 連續移動；Tween 0.12→0.09 秒；
+  移除舊觸控連走計時器（0.28 秒延遲造成卡頓）。
+- 內容擴充（data repo `base_world 0.2.0`）：5 地圖、6 NPC、6 道具、14 事件、雙向 portal；
+  manifest 32 檔／22,572 bytes；內容驗證器通過。
+- 測試 332 → **336**（標題畫面、對話中互動鍵、按住方向、內容數量）。
+
+### 建置與驗證
+
+- `bash tools/build_android.sh`：TESTS OK 336/336、APK 匯出／簽章／zipalign 通過。
+- APK：37,363,165 bytes、SHA-256 `23bcb879804ede61041dc1c7f46a16d2f276d4cc6ca75e8e76ea737382114040`、versionCode 4。
+- 未驗證：實機操作手感、對話流程、主頁面與內容體驗（本環境無 Android 裝置）。

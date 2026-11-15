@@ -65,7 +65,7 @@ timeout 240 "$G" --headless --path . --script res://tests/run_tests.gd \
   -- --content-dir=/workspace/自動遊戲開發/app_data_git
 ```
 
-- 2026-11-16 實測：**TESTS OK 332/332**（含觸控、內容包安裝／回滾、版本比較與 CJK 字型檢查）。
+- 2026-11-16 實測：**TESTS OK 336/336**（含標題畫面、觸控、內容包安裝／回滾、版本比較與 CJK 字型檢查）。
 - 輸出最後一行 `TESTS OK n/n` 或 `TESTS FAILED ...`；exit code 0/1。
 - 無 `--content-dir` 時，真實內容測試會標記 `[SKIP]`，不得視為通過。
 
@@ -74,7 +74,7 @@ timeout 240 "$G" --headless --path . --script res://tests/run_tests.gd \
 ```bash
 mkdir -p releases/android
 timeout 420 "$G" --headless --path . --export-debug "Android" \
-  "$PWD/releases/android/adventure-prototype-0.2.0-debug.apk"
+  "$PWD/releases/android/adventure-prototype-0.3.0-debug.apk"
 ```
 
 - preset 定義於 `export_presets.cfg`（非 gradle 建置、arm64-v8a、minSdk 24、targetSdk 36）。
@@ -85,7 +85,7 @@ timeout 420 "$G" --headless --path . --export-debug "Android" \
 ## 5. 驗證 APK
 
 ```bash
-APK=releases/android/adventure-prototype-0.2.0-debug.apk
+APK=releases/android/adventure-prototype-0.3.0-debug.apk
 "$ANDROID_HOME/build-tools/36.1/apksigner" verify --print-certs "$APK"
 "$ANDROID_HOME/build-tools/36.1/aapt2" dump badging "$APK" | head
 "$ANDROID_HOME/build-tools/36.1/zipalign" -c -v 4 "$APK"

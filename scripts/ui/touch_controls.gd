@@ -18,8 +18,6 @@ signal save_pressed
 signal load_pressed
 
 const MARGIN := 14.0
-const HOLD_DELAY := 0.28
-const REPEAT_INTERVAL := 0.14
 const SWIPE_THRESHOLD := 44.0
 const TAP_MAX_TIME := 0.4
 const TAP_MAX_DISTANCE := 18.0
@@ -29,11 +27,9 @@ var _visibility_override: Variant = null
 var _font: Font = null
 var _first_press_logged: bool = false
 
-# 按住連走
+# 目前按住的移動方向（main 輪詢用）
 var _held_direction: Vector2i = Vector2i.ZERO
 var _held_touch_index: int = -1
-var _hold_time: float = 0.0
-var _repeat_timer: float = 0.0
 
 # 世界手勢（非按鈕區域）
 var _press_touch_index: int = -1
@@ -124,7 +120,10 @@ func _is_touch_platform() -> bool:
 
 
 func _input(event: InputEvent) -> void:
-	if not visible or _blocked:
+	if not visible:
+		return
+	if _blocked:
+		_handle_blocked_input(event)
 		return
 	if event is InputEventScreenTouch:
 		var touch_event := event as InputEventScreenTouch
@@ -187,8 +186,6 @@ func _handle_press(touch_index: int, point: Vector2) -> void:
 func _start_hold(direction: Vector2i, touch_index: int) -> void:
 	_held_direction = direction
 	_held_touch_index = touch_index
-	_hold_time = 0.0
-	_repeat_timer = 0.0
 	emit_signal("move_pressed", direction)
 	_press_touch_index = -1
 	accept_event()
@@ -218,8 +215,6 @@ func _handle_release(touch_index: int) -> void:
 	if _held_touch_index == touch_index:
 		_held_direction = Vector2i.ZERO
 		_held_touch_index = -1
-		_hold_time = 0.0
-		_repeat_timer = 0.0
 	if _press_touch_index == touch_index:
 		var was_tap := not _press_moved and _press_time <= TAP_MAX_TIME
 		_press_touch_index = -1
@@ -231,15 +226,41 @@ func _handle_release(touch_index: int) -> void:
 
 func _process(delta: float) -> void:
 	_press_time += delta
-	if _held_direction == Vector2i.ZERO:
+
+
+## 對話／選單開啟時：仍允許動作按鈕（互動可推進對話），但忽略移動與世界手勢。
+func _handle_blocked_input(event: InputEvent) -> void:
+	var point := Vector2(-1, -1)
+	var pressed := false
+	if event is InputEventScreenTouch:
+		var touch_event := event as InputEventScreenTouch
+		point = touch_event.position
+		pressed = touch_event.pressed
+	elif event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			point = mouse_event.position
+			pressed = mouse_event.pressed
+	if not pressed:
 		return
-	_hold_time += delta
-	if _hold_time < HOLD_DELAY:
-		return
-	_repeat_timer += delta
-	while _repeat_timer >= REPEAT_INTERVAL:
-		_repeat_timer -= REPEAT_INTERVAL
-		emit_signal("move_pressed", _held_direction)
+	var hit := hit_test(point)
+	match hit:
+		"interact":
+			emit_signal("interact_pressed")
+			accept_event()
+		"save":
+			emit_signal("save_pressed")
+			accept_event()
+		"load":
+			emit_signal("load_pressed")
+			accept_event()
+		_:
+			pass
+
+
+## 目前按住的移動方向（main 以每幀輪詢做連續移動）。
+func get_held_direction() -> Vector2i:
+	return _held_direction
 
 
 # ---------------------------------------------------------------------------

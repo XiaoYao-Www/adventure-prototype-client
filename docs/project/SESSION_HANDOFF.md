@@ -6,42 +6,27 @@
 
 1. `docs/project/PROJECT_STATUS.md`
 2. `docs/project/NEXT_ACTIONS.md`
-3. `docs/project/DEVELOPMENT_LOG.md`（最近一筆：2026-11-16 第二輪回饋：觸控修正＋橫向＋素材盤點）
-4. `docs/project/DECISION_LOG.md`（D-0020 橫向已 accepted；D-0023 觸控重寫；D-0024 素材導入）
+3. `docs/project/DEVELOPMENT_LOG.md`（最近一筆：2026-11-16 第三次回饋 v0.3.0）
+4. `docs/project/DECISION_LOG.md`（D-0034～D-0037 為 v0.3.0 決策）
 5. `docs/project/ISSUES_AND_RISKS.md`
-6. `README.md`、`docs/BUILD.md`、`releases/android/BUILD_INFO.md`、
-   `../app_data_git/asset_catalog/`（素材目錄）
+6. `README.md`、`docs/BUILD.md`、`docs/architecture/UPDATE_SYSTEM.md`
 
 ## 目前在哪裡
 
-- 階段：**Phase 5**。v0.2.0 已建置並將由 tag 觸發 GitHub Release；功能含自動更新
-  （本體 APK：下載→驗 SHA-256→系統安裝；內容 DATA：下載內容包→驗證→user:// 安裝，下次啟動生效）、
-  觸控、橫向、CJK 字型；測試 **332/332**。
-- APK：`releases/android/adventure-prototype-0.2.0-debug.apk`
-
-- Release：已由 GitHub Actions 自動發布並驗證：client `v0.2.0`、`v0.2.1`；data `data-v0.1.0`、`data-v0.1.1`。
-  固定更新網址（App 使用）：
-  - client `/releases/latest/download/latest.json`
-  - data `/releases/latest/download/latest_data.json`
-- 更新資訊固定網址：client `/releases/latest/download/latest.json`、data `/releases/latest/download/latest_data.json`。
-- 使用者回饋：第一版「手機沒有有效操作」→ 已重寫，**等實機複驗**；並要求橫向（已設 sensor landscape）。
-- 素材：使用者提供 Mini World Sprites（CC0-1.0）＋ Items16（可商用/修改、禁止再散布），
-  1451 張 16×16 PNG；已建立 catalog／授權／聯絡表（content `494eb0e`），**尚未接入遊戲**。
-  Items16 不得進公開 APK。
-- 雙倉庫：client `main`、content `main`；已完成 GitHub 首次推送：
-  client `45b2b34`（https://github.com/XiaoYao-Www/adventure-prototype-client）、
-  data `494eb0e`（https://github.com/XiaoYao-Www/adventure-prototype-data）。
+- 階段：**Phase 6**。v0.3.0 已完成：標題主頁、對話可推進（互動鍵／點擊）、
+  按住方向鍵連續移動、內容擴充（5 地圖／6 NPC／6 道具／14 事件）。
+- 測試：**336/336**；內容版本 `base_world 0.2.0`（manifest 32 檔／22,572 bytes）。
+- APK：`releases/android/adventure-prototype-0.3.0-debug.apk`
+  （37,363,165 bytes、SHA-256 `23bcb879804ede61041dc1c7f46a16d2f276d4cc6ca75e8e76ea737382114040`、versionCode 4）。
+- 自動更新與 GitHub Release 管線已上線；每日 20:00 Discord 溝通排程已建立。
+- 雙倉庫：client `main`、content `main`；皆已 push。
+- **尚未驗證**：實機操作手感、對話流程、主頁面、內容體驗、自動更新（本環境無 Android 裝置）。
 
 ## 下一個動作
 
-0. 實機安裝 v0.2.0 驗證本體自動更新到 v0.2.1，並觀察內容是否更新到 0.1.1。
-1. 依 R-025 決定正式 release 簽章；之後再用同一流程發布正式版。
-
-0. 推送已完成；後續變更用 `bash tools/push_to_github.sh` 同步（deploy key 已授權）。
-
-1. 使用者完成第二版 APK 實機複驗（任務 1）；若仍無法操作，取 logcat。
-2. 完成素材授權核對（任務 2）→ 以真實素材替換 placeholder（任務 3）。
-3. 依回饋調整觸控與橫向版面（任務 4）。
+1. 實機驗收 v0.3.0：主頁面 → 開始 → 對話（互動鍵／點擊）→ 連續移動 → 探索 5 地圖。
+2. 依回饋調整手感／UI；補 Bot Token 後每日 Discord 讀訊息與回覆。
+3. 決定正式 release 簽章；接入 Mini World Sprites 美術。
 
 ## 環境速查
 
@@ -56,24 +41,14 @@ export PATH="$JAVA_HOME/bin:$ANDROID_HOME/build-tools/36.1:$PATH"
 ```
 
 - 一鍵建置＋驗證：`bash tools/build_android.sh`
-- 全專案檢查：`bash tools/checks.sh`（7 步，含 APK 簽章與 BUILD_INFO 雜湊比對）
-- 素材在**工作區** `assets/`（不在任何 repo）；分類輸出在 `app_data_git/asset_catalog/`。
-- 重建 APK 後必須更新 `releases/android/BUILD_INFO.md`（`checks.sh` 會比對 SHA-256）。
-
-## Discord／每日流程
-
-- 玩家頻道：Discord「開發管理員」（頻道 id `1571589032570257518`）。
-- **只在 20:00–24:00（Asia/Taipei）讀取／回覆玩家**；發送用
-  `node tools/discord_game_send.mjs "..."`（會自動拒絕窗口外）。
-- 每天 20:00 有排程提醒「Discord 玩家溝通與每日遊戲改進」。
-- 讀取訊息需要 `tools/secrets/discord_bot.token`（尚未提供，R-032）；沒有 token 時只發日報、
-  不得聲稱已讀訊息。
+- 全專案檢查：`bash tools/checks.sh`
+- Discord 發送：`node tools/discord_game_send.mjs "..."`（僅 20:00–24:00）
+- 每日排程：20:00「Discord 玩家溝通與每日遊戲改進」
 
 ## 不要做
 
-- 不要把手機版素材（license_unverified）放進公開 APK。
+- 不要在 20:00–24:00 以外發送 Discord 訊息。
 - 不要 push、改 remote、force push、reset／clean 或覆蓋使用者變更。
-- 不要未經使用者核准改用 release 簽章或上架。
+- 不要未經核准改用 release 簽章或上架。
 - 不要用「APK 建置成功」宣稱實機可玩。
-- 不要自行定案世界觀、遊戲名稱、戰鬥形式或最終美術風格。
-- 不要手動編輯 `res://content/`（由 sync 工具產生）。
+- 不要把手機版受限素材（Items16）放進公開 APK。
