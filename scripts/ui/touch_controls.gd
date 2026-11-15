@@ -220,8 +220,9 @@ func _handle_release(touch_index: int) -> void:
 		_press_touch_index = -1
 		if was_tap:
 			# 世界區域輕點 = 互動（與鍵盤 E 相同行為）
+			# 注意：不可 accept_event()，否則同一事件的 GUI 按鈕（如主頁按鈕）
+			# 會收不到 release，導致按鈕永遠點不動。
 			emit_signal("interact_pressed")
-		accept_event()
 
 
 func _process(delta: float) -> void:
@@ -321,6 +322,10 @@ func should_show() -> bool:
 func _apply_visibility() -> void:
 	visible = should_show()
 	queue_redraw()
+
+
+func refresh_visibility() -> void:
+	_apply_visibility()
 
 
 func set_visibility_override(value: Variant) -> void:

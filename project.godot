@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Adventure Prototype"
-config/version="0.3.0"
+config/version="0.3.1"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
@@ -27,7 +27,7 @@ window/stretch/aspect="expand"
 [game]
 
 content_dir=""
-version_code=4
+version_code=5
 update_enabled=true
 update_manifest_url="https://github.com/XiaoYao-Www/adventure-prototype-client/releases/latest/download/latest.json"
 data_manifest_url="https://github.com/XiaoYao-Www/adventure-prototype-data/releases/latest/download/latest_data.json"

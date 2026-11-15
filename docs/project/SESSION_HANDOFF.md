@@ -13,18 +13,18 @@
 
 ## 目前在哪裡
 
-- 階段：**Phase 6**。v0.3.0 已完成：標題主頁、對話可推進（互動鍵／點擊）、
+- 階段：**Phase 6**。v0.3.1 修正主頁觸控與自動更新權限卡住；v0.3.0 的內容與操作改進延續（標題主頁、對話可推進（互動鍵／點擊）、
   按住方向鍵連續移動、內容擴充（5 地圖／6 NPC／6 道具／14 事件）。
-- 測試：**336/336**；內容版本 `base_world 0.2.0`（manifest 32 檔／22,572 bytes）。
-- APK：`releases/android/adventure-prototype-0.3.0-debug.apk`
-  （37,363,165 bytes、SHA-256 `23bcb879804ede61041dc1c7f46a16d2f276d4cc6ca75e8e76ea737382114040`、versionCode 4）。
+- 測試：**339/339**；內容版本 `base_world 0.2.0`（manifest 32 檔／22,572 bytes）。
+- APK：`releases/android/adventure-prototype-0.3.1-debug.apk`
+  （37,363,328 bytes、SHA-256 `7f480c93885c69adf655fbde630b38a87d08ab4c55dd6d7b16087e1f8297613b`、versionCode 5）。
 - 自動更新與 GitHub Release 管線已上線；每日 20:00 Discord 溝通排程已建立。
 - 雙倉庫：client `main`、content `main`；皆已 push。
 - **尚未驗證**：實機操作手感、對話流程、主頁面、內容體驗、自動更新（本環境無 Android 裝置）。
 
 ## 下一個動作
 
-1. 實機驗收 v0.3.0：主頁面 → 開始 → 對話（互動鍵／點擊）→ 連續移動 → 探索 5 地圖。
+1. 實機驗收 v0.3.1：主頁面可點開始 → 對話（互動鍵／點擊）→ 連續移動 → 探索 5 地圖；更新可否完成下載與安裝。
 2. 依回饋調整手感／UI；補 Bot Token 後每日 Discord 讀訊息與回覆。
 3. 決定正式 release 簽章；接入 Mini World Sprites 美術。
 

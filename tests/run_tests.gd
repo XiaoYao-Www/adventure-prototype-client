@@ -83,6 +83,7 @@ func _run_all() -> void:
 	await _test_world_view_atlas()
 	await _test_player_controller()
 	await _test_main_scene()
+	await _test_title_screen_touch()
 	_test_updates()
 	_test_real_content()
 
@@ -916,6 +917,39 @@ func _touch_event(point: Vector2, pressed: bool) -> InputEventScreenTouch:
 # ---------------------------------------------------------------------------
 # 自動更新（本體 APK + 內容 DATA）
 # ---------------------------------------------------------------------------
+
+func _test_title_screen_touch() -> void:
+	th.section("主頁面：觸控按鈕")
+	var title := TitleScreen.new()
+	root.add_child(title)
+	title.size = Vector2(960, 540)
+	await process_frame
+	title.size = Vector2(960, 540)
+	await process_frame
+	var start_button: Button = title.find_child("StartButton", true, false)
+	th.check_true(start_button != null, "開始按鈕存在")
+	if start_button == null:
+		title.queue_free()
+		return
+	var fired: Array = [0]
+	title.start_game.connect(func() -> void: fired[0] += 1)
+	var rect: Rect2 = start_button.get_global_rect()
+	var press := InputEventScreenTouch.new()
+	press.index = 0
+	press.position = rect.get_center()
+	press.pressed = true
+	title._input(press)
+	var release := InputEventScreenTouch.new()
+	release.index = 0
+	release.position = rect.get_center()
+	release.pressed = false
+	title._input(release)
+	th.check_eq(fired[0], 1, "觸控點擊「開始遊戲」會發出 start_game")
+	var disabled_continue: Button = title.find_child("ContinueButton", true, false)
+	th.check_true(disabled_continue != null, "繼續按鈕存在")
+	title.queue_free()
+	await process_frame
+
 
 func _test_updates() -> void:
 	th.section("版本比較")

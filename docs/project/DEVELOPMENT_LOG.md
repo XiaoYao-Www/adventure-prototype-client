@@ -300,3 +300,27 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
 - `bash tools/build_android.sh`：TESTS OK 336/336、APK 匯出／簽章／zipalign 通過。
 - APK：37,363,165 bytes、SHA-256 `23bcb879804ede61041dc1c7f46a16d2f276d4cc6ca75e8e76ea737382114040`、versionCode 4。
 - 未驗證：實機操作手感、對話流程、主頁面與內容體驗（本環境無 Android 裝置）。
+
+## 2026-11-16（第四次回饋）— v0.3.1：主頁觸控與更新流程修正
+
+### 使用者回饋
+
+1. 無法按「開始遊玩」。
+2. 自動更新一直跳到權限頁，沒有下一步。
+
+### 根因與修正
+
+- 主頁按鈕：`TouchControls._handle_release()` 在世界輕點時呼叫 `accept_event()`，
+  使同一觸控事件的 release 在 GUI 派送前被標記為已處理，Button 收不到完整點擊。
+  → 移除該 accept_event()；`TitleScreen._input()` 新增直接觸控命中（按放同一按鈕才觸發），
+  不依賴「觸控模擬滑鼠」。
+- 主頁尺寸：改為依 viewport 尺寸同步（960×540），按鈕完整在畫面內。
+- 自動更新：移除「先檢查權限→跳設定頁」流程；改為直接以 Intent ACTION_VIEW 啟動系統安裝
+  （在 UI thread），系統要求授權時由系統提示；返回 App（APPLICATION_RESUMED）自動重試。
+- 版本 0.3.1（versionCode 5）；新增主頁觸控測試（336→339）。
+
+### 建置與驗證
+
+- `bash tools/build_android.sh`：TESTS OK 339/339、APK 簽章／zipalign 通過。
+- APK：37,363,328 bytes、SHA-256 `7f480c93885c69adf655fbde630b38a87d08ab4c55dd6d7b16087e1f8297613b`。
+- 發布前檢查：由新增的 release-qa 成員執行 QA gate，通過後才 tag 發布。

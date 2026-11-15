@@ -63,7 +63,7 @@ func show_status(text: String) -> void:
 
 ## 已下載、等待使用者按「安裝更新」（例如自動安裝被系統擋下）。
 func show_install_button(path: String, text: String = "更新已下載，點此安裝") -> void:
-	_label.text = text
+	_label.text = text + ("　（若系統要求，允許後回來會自動重試）" if text.contains("重試") else "")
 	_install_path = path
 	_button.visible = true
 	visible = true

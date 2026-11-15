@@ -9,7 +9,7 @@ extends Node
 ## 內容目錄解析順序：CLI `--content-dir=` > ProjectSettings `game/content_dir`
 ## > res://content。缺少內容時顯示 ErrorPanel，不崩潰、不進入遊戲。
 
-const GAME_VERSION := "0.3.0"
+const GAME_VERSION := "0.3.1"
 const ATLAS_TEXTURE_PATH := "res://assets/generated/placeholder_tiles.png"
 const ATLAS_META_PATH := "res://assets/generated/placeholder_tiles.json"
 const CAMERA_ZOOM := 3
@@ -35,6 +35,7 @@ var atlas_texture: Texture2D
 var atlas_meta: Dictionary = {}
 var content_dir_used: String = ""
 var gameplay_ready: bool = false
+var _pending_update_apk: String = ""
 
 
 func _ready() -> void:
@@ -190,11 +191,16 @@ func _show_title() -> void:
 	title_screen.set_version(GAME_VERSION)
 	title_screen.set_continue_available(FileAccess.file_exists(SaveManager.DEFAULT_SAVE_PATH))
 	title_screen.open()
+	if touch_controls != null:
+		touch_controls.visible = false
 
 
 func _on_title_start_game() -> void:
 	if title_screen != null:
 		title_screen.close()
+	if touch_controls != null:
+		touch_controls.refresh_visibility()
+	_retry_pending_update()
 	if hud != null:
 		hud.show_notice("冒險開始", 2.5)
 
@@ -207,6 +213,9 @@ func _on_title_continue_game() -> void:
 	_load_game()
 	if title_screen != null:
 		title_screen.close()
+	if touch_controls != null:
+		touch_controls.refresh_visibility()
+	_retry_pending_update()
 
 
 func _on_title_check_updates() -> void:
@@ -321,7 +330,7 @@ func _try_interact() -> void:
 ## 互動統一入口：對話中 → 推進對話；探索中 → 觸發面向物件的互動。
 ## 鍵盤（E/Space/Enter）與觸控「互動」鍵都走這裡。
 func _request_interact() -> void:
-	if session == null or not gameplay_ready:
+	if session == null or not gameplay_ready or _title_active():
 		return
 	if session.is_in_dialogue():
 		if dialogue_panel.has_choices():
@@ -333,7 +342,7 @@ func _request_interact() -> void:
 
 ## 觸控方向鍵：一次一格；對話中不移動。
 func _on_touch_move(direction: Vector2i) -> void:
-	if not gameplay_ready or session == null:
+	if not gameplay_ready or session == null or _title_active():
 		return
 	if session.is_in_dialogue():
 		return
@@ -434,10 +443,14 @@ func _on_app_update_ready(info: Dictionary) -> void:
 
 func _on_app_update_result(result: Dictionary) -> void:
 	var path := String(result.get("path", ""))
+	if bool(result.get("ok", false)) or bool(result.get("pending", false)):
+		_pending_update_apk = path if not path.is_empty() else _pending_update_apk
 	if bool(result.get("ok", false)):
+		_pending_update_apk = path
 		if update_panel != null:
 			update_panel.show_install_button(path, "請在系統視窗完成安裝")
 		return
+	_pending_update_apk = path
 	var message := String(result.get("error", "安裝失敗"))
 	if update_panel != null:
 		update_panel.show_install_button(path, message + "（點此重試）")
@@ -461,6 +474,22 @@ func _on_update_check_finished() -> void:
 		return
 	if not update_panel.has_install_action():
 		update_panel.hide_panel()
+
+
+## 從系統設定返回或重新回到前景時，自動重試已下載的更新安裝。
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_RESUMED or what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
+		_retry_pending_update()
+
+
+func _retry_pending_update() -> void:
+	if _pending_update_apk.is_empty() or not FileAccess.file_exists(_pending_update_apk):
+		return
+	var result := AndroidInstaller.install_apk(_pending_update_apk)
+	if bool(result.get("ok", false)):
+		_pending_update_apk = ""
+		if update_panel != null:
+			update_panel.show_status("已開啟系統安裝程式")
 
 
 func _on_install_update_requested(path: String) -> void:

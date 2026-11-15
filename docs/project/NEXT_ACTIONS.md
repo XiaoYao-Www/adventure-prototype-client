@@ -1,7 +1,7 @@
 # 下一步任務
 
-1. **[P0｜需使用者] 實機驗收 v0.3.0**
-   - 安裝 `releases/android/adventure-prototype-0.3.0-debug.apk`（或 GitHub Release）。
+1. **[P0｜需使用者] 實機驗收 v0.3.1**
+   - 安裝 `releases/android/adventure-prototype-0.3.1-debug.apk`（或 GitHub Release）。
    - 確認：主頁面出現、開始/繼續可用；對話可用「互動」鍵或點擊畫面逐句推進；
      按住方向鍵連續移動、手感是否可接受；5 張地圖與 NPC/事件可探索。
    - 回報 logcat 與截圖。
