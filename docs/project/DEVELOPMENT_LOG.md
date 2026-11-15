@@ -196,3 +196,14 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
   禁止再散布或轉售原始包 → 標記 `redistributable=false`，不進公開 APK。
 - 提交 content repo：`494eb0e`（asset_catalog + ASSET_POLICY + changelog）。
 - 限制：Items16 無語意檔名與對照表，目前只標 `item_icon`，尚未逐張語意分類。
+
+### GitHub 遠端連接（同日）
+
+- 使用者建立兩個遠端倉庫（public、空、預設 `main`）：
+  - `XiaoYao-Www/adventure-prototype-client` → 本地 `app_base_git`
+  - `XiaoYao-Www/adventure-prototype-data` → 本地 `app_data_git`
+- 已設定 `origin`（SSH）、本地分支 `master` 改名為 `main`、每個倉庫指定獨立 deploy key
+  （`tools/ssh/id_ed25519_{client,data}`，私鑰不進 Git）。
+- 現況：GitHub SSH 可連（22/443 皆可），但金鑰尚未加入 GitHub → `Permission denied (publickey)`。
+- 待使用者把兩把公鑰加入對應 repo 的 Deploy keys（Allow write access），
+  執行 `bash tools/push_to_github.sh` 即完成首次推送並驗證。

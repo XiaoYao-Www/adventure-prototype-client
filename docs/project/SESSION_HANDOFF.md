@@ -22,9 +22,12 @@
 - 素材：使用者提供 Mini World Sprites（CC0-1.0）＋ Items16（可商用/修改、禁止再散布），
   1451 張 16×16 PNG；已建立 catalog／授權／聯絡表（content `494eb0e`），**尚未接入遊戲**。
   Items16 不得進公開 APK。
-- 雙倉庫：client `master`、content `master`；皆無 remote、未 push。
+- 雙倉庫：client `main`、content `main`；已設定 GitHub remote（client=adventure-prototype-client、
+  data=adventure-prototype-data），**推送待使用者加入 deploy key**。
 
 ## 下一個動作
+
+0. 使用者把 `tools/ssh/*.pub` 加入 GitHub Deploy keys（write）→ 執行 `bash tools/push_to_github.sh` 完成首次推送。
 
 1. 使用者完成第二版 APK 實機複驗（任務 1）；若仍無法操作，取 logcat。
 2. 完成素材授權核對（任務 2）→ 以真實素材替換 placeholder（任務 3）。

@@ -31,6 +31,7 @@
 | D-0023 | 2026-11-16 | 觸控控制改為「自繪 UI + 手動命中測試」實作（不再用 Button 節點）；支援按住連走、世界滑動轉向、輕點互動；對話時阻擋 | accepted | 第一版實機回報「沒有有效操作方法」，需移除 Control 佈局依賴並增加可測試性；已用 InputEvent 模擬測試 | client UI、Android 輸入 |
 | D-0024 | 2026-11-16 | 導入使用者提供的素材：Mini World Sprites 與 Items16；先建立 asset_catalog 分類／雜湊／授權狀態，暫不進 APK | accepted | 使用者要求自行分類與標記；授權尚未逐包核對（license_unverified），不得發布 | art pipeline、content repo |
 | D-0025 | 2026-11-16 | 素材授權分類：Mini World Sprites 採 CC0-1.0 可再散布；Items16 僅「內部使用」不得進公開 APK（redistributable=false） | accepted | itch.io 頁面授權已核對（2026-11-16）；專案規則要求再散布受限素材必須隔離 | art pipeline、release |
+| D-0026 | 2026-11-16 | 兩個 GitHub 遠端倉庫：client=adventure-prototype-client、data=adventure-prototype-data；本地分支改為 `main` 對齊遠端預設分支；採每倉庫一把 SSH deploy key（write） | accepted | 使用者提供兩個 GitHub repo 並要求連接；deploy key 最小權限 | repository、release |
 
 ## 變更規則
 
