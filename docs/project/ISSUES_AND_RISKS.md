@@ -33,4 +33,5 @@
 | R-027 | 驗證 | 自動更新下載／系統安裝／內容更新流程未在實機驗證 | 高 | open | 實機安裝 v0.2.0 後回報 logcat 與畫面 |
 | R-028 | 行為 | 內容更新在下次啟動才生效（非熱重載） | 低 | accepted（設計取捨） | 未來可做熱重載 |
 | R-029 | 發布 | GitHub repo 與 release 均為公開，含 APK；需使用者決定是否改私有 | 中 | open | 使用者決定；deploy key 在私有 repo 仍可用 |
-| R-030 | CI | Release 依賴 GitHub Actions 與其 token 權限；若 Actions 被停用或權限為唯讀則無法自動發布 | 中 | open | 首次 tag 後檢查 Actions 結果；必要時調整 repo/workflow 權限 |
+| R-030 | CI | Release 依賴 GitHub Actions 與其 token 權限 | 中 | **resolved** | 2026-11-16 首次 tag 後 4 個 release run 全部 success；workflow 權限 contents: write 可用 |
+| R-031 | 更新 | GitHub `/releases/latest/download/` 有數分鐘 CDN 快取，發布後立即啟動可能取得前一版更新資訊 | 低 | accepted | 下次啟動會再檢查；未來可加 cache-buster 或改用 API |

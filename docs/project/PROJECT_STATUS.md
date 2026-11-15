@@ -37,8 +37,15 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
   螢幕方向改為**橫向**（sensor landscape）。第一版實機回報「沒有有效操作」，此版尚未實機複驗。
 - **APK（v0.2.1）**：`app_base_git/releases/android/adventure-prototype-0.2.1-debug.apk`
   （37,340,156 bytes、SHA-256 `4ec34e1e…b6fb`、versionCode 3、debug 簽章、arm64-v8a、minSdk 24、橫向）。
-- **更新驗證組合**：v0.2.0 release 保留，安裝 v0.2.0 後啟動會自動下載並安裝 v0.2.1（本體更新）；
-  內容同時提供 0.1.1 更新包（下一版啟動生效）。
+- **GitHub Releases（已自動發布並驗證）**：client `v0.2.0`、`v0.2.1`；data `data-v0.1.0`、`data-v0.1.1`。
+  固定更新網址：
+  - 本體 `https://github.com/XiaoYao-Www/adventure-prototype-client/releases/latest/download/latest.json`
+  - 內容 `https://github.com/XiaoYao-Www/adventure-prototype-data/releases/latest/download/latest_data.json`
+- **更新驗證組合**：安裝 `v0.2.0` APK → 啟動自動檢查到 `v0.2.1` → 下載/驗證/開啟系統安裝；
+  內容 bundled 0.1.0 對上最新 0.1.1 → 下載內容包、驗證、下次啟動生效。
+- **驗證紀錄**：latest.json（v0.2.1、version_code 3、APK sha256 `4ec34e1e…b6fb`）與
+  latest_data.json（0.1.1、zip sha256 `1f7b40ce…e11e`）皆實際下載比對一致；
+  GitHub Actions 兩個 release run 均 success。
 - **自動更新（v0.2.0）**：啟動檢查 GitHub Releases 的 `latest.json` → 下載 APK → 驗 sha256/size →
   透過 AndroidRuntime/FileProvider 開啟系統安裝程式；內容則檢查 `latest_data.json` →
   下載內容包 → 驗證 → 安裝到 `user://content_packs/`（下次啟動生效，失敗保留舊版）。
@@ -55,6 +62,8 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 | `node tools/build_content_manifest.mjs ../app_data_git --check` | **MANIFEST OK**（4525 bytes） |
 | `node tools/sync_content_bundle.mjs` | **BUNDLE OK**（res://content = game-content 0.1.0 快照） |
 | Godot `--import` | exit 0、無 GDScript 錯誤 |
+| 更新資訊實際下載比對 | latest.json / latest_data.json / APK / 內容包 sha256 全部一致 |
+| GitHub Actions release | client v0.2.0、v0.2.1、data data-v0.1.0、data-v0.1.1 全部 success |
 | Godot headless 測試 | **TESTS OK 332/332**（內容、格子、對話、存檔、portal、觸控、CJK 字型、更新資訊解析、內容包安裝／回滾） |
 | 主場景 headless | exit 0、`map_start_village` 玩家 `(3,6)` |
 | 缺內容容錯 | `E_NO_MANIFEST`＋ErrorPanel、不崩潰 |

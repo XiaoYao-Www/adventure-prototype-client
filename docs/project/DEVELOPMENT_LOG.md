@@ -263,3 +263,14 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
 - 目的：保留 v0.2.0 release，讓安裝 v0.2.0 的裝置啟動時實際觸發本體自動更新（v0.2.0→v0.2.1）。
 - 內容 repo 同步發布 0.1.1 內容包，觸發內容自動更新（0.1.0→0.1.1，下次啟動生效）。
 - 測試新增「專案版本與 main.gd GAME_VERSION 一致」，避免版本漏改。
+
+### GitHub Release 自動化驗證（同日完成）
+
+- 推送 tag 後 GitHub Actions 自動建立 release（不需手動 gh／token）：
+  - client `v0.2.0`、`v0.2.1`（成功；assets：APK、BUILD_INFO.md、latest.json）
+  - data `data-v0.1.0`、`data-v0.1.1`（成功；assets：內容包 ZIP、latest_data.json）
+- 以固定網址實際下載驗證：
+  - `releases/latest/download/latest.json` → version 0.2.1、APK sha256 `4ec34e1e…b6fb` 與下載檔一致。
+  - `releases/latest/download/latest_data.json` → content_version 0.1.1、zip sha256 `1f7b40ce…e11e` 與下載檔一致。
+  - 註：GitHub 對 `/releases/latest/download/` 有數分鐘 CDN 快取；發布後立即抓可能拿到前一版，稍候即正確。
+- 內容 repo 0.1.1：村長對話加一句森林路況提示，manifest 重算、驗證器通過。

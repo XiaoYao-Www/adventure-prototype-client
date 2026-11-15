@@ -19,7 +19,10 @@
   觸控、橫向、CJK 字型；測試 **332/332**。
 - APK：`releases/android/adventure-prototype-0.2.0-debug.apk`
 
-- Release：推送 tag `v*`（本體）／`data-v*`（內容）由 GitHub Actions 自動建立。
+- Release：已由 GitHub Actions 自動發布並驗證：client `v0.2.0`、`v0.2.1`；data `data-v0.1.0`、`data-v0.1.1`。
+  固定更新網址（App 使用）：
+  - client `/releases/latest/download/latest.json`
+  - data `/releases/latest/download/latest_data.json`
 - 更新資訊固定網址：client `/releases/latest/download/latest.json`、data `/releases/latest/download/latest_data.json`。
 - 使用者回饋：第一版「手機沒有有效操作」→ 已重寫，**等實機複驗**；並要求橫向（已設 sensor landscape）。
 - 素材：使用者提供 Mini World Sprites（CC0-1.0）＋ Items16（可商用/修改、禁止再散布），
@@ -31,7 +34,8 @@
 
 ## 下一個動作
 
-0. 實機安裝 v0.2.0，確認觸控與自動更新流程（logcat 過濾 godot）。
+0. 實機安裝 v0.2.0 驗證本體自動更新到 v0.2.1，並觀察內容是否更新到 0.1.1。
+1. 依 R-025 決定正式 release 簽章；之後再用同一流程發布正式版。
 
 0. 推送已完成；後續變更用 `bash tools/push_to_github.sh` 同步（deploy key 已授權）。
 
