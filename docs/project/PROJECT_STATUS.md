@@ -101,6 +101,17 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 - 已產生聯絡表（工作區 `tools/asset_previews/`）與索引，日後不需逐張開圖。
 - 目前 APK 仍使用專案自製 placeholder 與內建字型，尚未替換為這些素材。
 
+## Discord 玩家溝通與每日節奏（2026-11-16）
+
+- 玩家頻道：Discord「開發管理員」webhook（頻道 id `1571589032570257518`）；
+  DSH profile 的 Discord 通知已指向此頻道（需重啟 DSH web 才讓 `discord_send` 工具生效；
+  專用腳本 `tools/discord_game_send.mjs` 立即可用）。
+- 溝通窗口：**每天 20:00–24:00（Asia/Taipei）** 才讀取與回覆；發送腳本強制此限制。
+- 每日開發：已建立每天 20:00 的排程提醒，內容含「讀訊息→回覆→至少一項改進→測試→
+  release→日報」。排程需 DSH web session 存活才會觸發。
+- **限制**：webhook 無法讀取訊息；要讀玩家訊息需 Discord Bot Token
+  （`tools/secrets/discord_bot.token`，尚未提供）。目前只能發送。
+
 ## 目前阻塞
 
 1. **實機驗收**：需要使用者把 APK 安裝到 Android 手機（arm64、Android 7.0+），

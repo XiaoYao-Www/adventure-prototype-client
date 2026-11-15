@@ -35,3 +35,7 @@
 | R-029 | 發布 | GitHub repo 與 release 均為公開，含 APK；需使用者決定是否改私有 | 中 | open | 使用者決定；deploy key 在私有 repo 仍可用 |
 | R-030 | CI | Release 依賴 GitHub Actions 與其 token 權限 | 中 | **resolved** | 2026-11-16 首次 tag 後 4 個 release run 全部 success；workflow 權限 contents: write 可用 |
 | R-031 | 更新 | GitHub `/releases/latest/download/` 有數分鐘 CDN 快取，發布後立即啟動可能取得前一版更新資訊 | 低 | accepted | 下次啟動會再檢查；未來可加 cache-buster 或改用 API |
+
+| R-032 | 溝通 | Discord webhook 只能發送、不能讀取訊息；缺 Bot Token 時無法回覆玩家 | 高 | open | 請使用者建立 Bot（Message Content Intent＋Read Message History）並提供 token 至 tools/secrets/discord_bot.token |
+| R-033 | 排程 | 每日 20:00 排程依賴 DSH web session 存活；session 結束則當日不會自動執行 | 中 | open | 選項：維持 DSH 常駐；或日後提供外部排程呼叫方式（無 cron/systemd 可用） |
+| R-034 | 秘密 | webhook URL 與 Bot token 屬敏感資訊 | 中 | accepted | 只存 profile 設定與 tools/secrets/（600），不進 Git、不放日報 |

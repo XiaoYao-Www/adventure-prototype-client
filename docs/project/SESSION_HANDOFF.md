@@ -60,6 +60,15 @@ export PATH="$JAVA_HOME/bin:$ANDROID_HOME/build-tools/36.1:$PATH"
 - 素材在**工作區** `assets/`（不在任何 repo）；分類輸出在 `app_data_git/asset_catalog/`。
 - 重建 APK 後必須更新 `releases/android/BUILD_INFO.md`（`checks.sh` 會比對 SHA-256）。
 
+## Discord／每日流程
+
+- 玩家頻道：Discord「開發管理員」（頻道 id `1571589032570257518`）。
+- **只在 20:00–24:00（Asia/Taipei）讀取／回覆玩家**；發送用
+  `node tools/discord_game_send.mjs "..."`（會自動拒絕窗口外）。
+- 每天 20:00 有排程提醒「Discord 玩家溝通與每日遊戲改進」。
+- 讀取訊息需要 `tools/secrets/discord_bot.token`（尚未提供，R-032）；沒有 token 時只發日報、
+  不得聲稱已讀訊息。
+
 ## 不要做
 
 - 不要把手機版素材（license_unverified）放進公開 APK。

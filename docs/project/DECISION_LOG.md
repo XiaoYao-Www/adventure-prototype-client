@@ -36,6 +36,9 @@
 | D-0028 | 2026-11-16 | Release 自動化：推送 tag（client `v*`、data `data-v*`）由 GitHub Actions 建立 release 並上傳 APK／更新資訊；App 讀固定網址 `releases/latest/download/*.json`，不需 API token | accepted | 使用者要求「自己提交 release」；deploy key 推送可觸發 workflow，避免在專案保存 token | release、CI |
 | D-0029 | 2026-11-16 | 自動更新只在 Android 平台執行；桌機開發流程不檢查、不自動安裝 | accepted | 桌面版無 Android 安裝器；保持開發可控 | client |
 | D-0030 | 2026-11-16 | 持續使用同一個 debug keystore 簽署所有測試 APK，確保自動更新可覆蓋安裝；正式 release 簽章另案決定（R-025/R-014） | accepted | Android 要求更新 APK 簽章與已安裝版本一致 | release、簽章 |
+| D-0031 | 2026-11-16 | 玩家溝通：Discord 專用 webhook（頻道 1571589032570257518）；只在每日 20:00–24:00 讀取／回覆；DSH profile 通知改指向此頻道（需重啟生效） | accepted | 使用者明確指定頻道與時段 | communication |
+| D-0032 | 2026-11-16 | 每日 20:00 後至少一次遊戲改進與開發，並在窗口內發日報；以 DSH 每日排程提醒實作 | accepted | 使用者明確要求 | process |
+| D-0033 | 2026-11-16 | 讀取玩家訊息需 Discord Bot Token（webhook 只能送不能讀）；未提供前僅廣播，不得假裝讀過訊息 | accepted | 平台限制 | communication |
 
 ## 變更規則
 
