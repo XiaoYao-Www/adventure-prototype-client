@@ -1,5 +1,7 @@
 # 下一步任務
 
+0. **[流程] 每次 release 前送 release-qa QA Gate，PASS 後才推 tag**（已建立）。
+
 1. **[P0｜需使用者] 實機驗收 v0.3.1**
    - 安裝 `releases/android/adventure-prototype-0.3.1-debug.apk`（或 GitHub Release）。
    - 確認：主頁面出現、開始/繼續可用；對話可用「互動」鍵或點擊畫面逐句推進；

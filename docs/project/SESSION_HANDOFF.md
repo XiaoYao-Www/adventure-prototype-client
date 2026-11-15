@@ -28,6 +28,11 @@
 2. 依回饋調整手感／UI；補 Bot Token 後每日 Discord 讀訊息與回覆。
 3. 決定正式 release 簽章；接入 Mini World Sprites 美術。
 
+## 團隊
+
+- **release-qa**（專職發布前檢查）：任何 release 前先送 QA Gate，收到 `QA GATE: PASS` 才推 tag。
+- godot-engineer／content-engineer：既有實作成員（目前 inactive）。
+
 ## 環境速查
 
 ```bash

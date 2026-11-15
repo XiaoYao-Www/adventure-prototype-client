@@ -45,6 +45,7 @@
 | D-0037 | 2026-11-16 | 對話中觸控「互動」鍵與點擊畫面都可推進；僅選項畫面需點選項按鈕 | accepted | 使用者回報「對話框打開後無法繼續」（Android 無鍵盤） | client UI |
 | D-0038 | 2026-11-16 | 觸控層不得在「世界輕點」的 release 事件呼叫 accept_event()；主頁按鈕另加直接觸控處理（不依賴觸控轉滑鼠） | accepted | 實機回報主頁「開始遊戲」按不到：觸控層吃掉 release，GUI 按鈕收不到完整點擊 | client UI |
 | D-0039 | 2026-11-16 | 自動更新不再主動跳「安裝未知來源」設定頁；直接啟動系統安裝 Intent，回到前景（APPLICATION_RESUMED）自動重試；失敗顯示重試按鈕與說明 | accepted | 實機回報更新一直跳權限頁、沒有下一步 | client update |
+| D-0040 | 2026-11-16 | 新增專職 release-qa 成員與「發布前 QA Gate」：任何 GitHub Release 必須先由 QA 獨立驗證內容、測試、APK、更新資訊與關鍵回歸並回報 QA GATE: PASS，Lead 才可推 tag | accepted | 使用者要求「添加一位成員，做發布前檢查與測試」；v0.3.1 已實際通過 QA Gate | process、release |
 
 ## 變更規則
 

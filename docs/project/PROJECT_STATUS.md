@@ -117,6 +117,13 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 - **限制**：webhook 無法讀取訊息；要讀玩家訊息需 Discord Bot Token
   （`tools/secrets/discord_bot.token`，尚未提供）。目前只能發送。
 
+## QA 與發布流程（2026-11-16）
+
+- 專職 **release-qa** 成員已加入；每次 release 前執行 QA Gate（內容／測試／APK／更新資訊／回歸）。
+  v0.3.1 已通過：TESTS OK 339/339、CONTENT OK、APK 簽章/版本/權限/zipalign/雜湊一致、
+  latest.json 正確；判定 `QA GATE: PASS` 後才推送 tag。
+- 規則已寫入工作區 `AGENTS.md` 與決策 D-0040。
+
 ## 目前阻塞
 
 1. **實機驗收**：需要使用者把 APK 安裝到 Android 手機（arm64、Android 7.0+），
