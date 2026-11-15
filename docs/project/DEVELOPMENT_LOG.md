@@ -256,3 +256,10 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
 
 - 實機驗收 v0.2.0（觸控、橫向、更新流程）。
 - 依 R-025 決定正式 release 簽章。
+
+### v0.2.1 更新驗證版本（同日）
+
+- 版本 0.2.1、versionCode 3，APK 37,340,156 bytes、SHA-256 `4ec34e1e…b6fb`。
+- 目的：保留 v0.2.0 release，讓安裝 v0.2.0 的裝置啟動時實際觸發本體自動更新（v0.2.0→v0.2.1）。
+- 內容 repo 同步發布 0.1.1 內容包，觸發內容自動更新（0.1.0→0.1.1，下次啟動生效）。
+- 測試新增「專案版本與 main.gd GAME_VERSION 一致」，避免版本漏改。

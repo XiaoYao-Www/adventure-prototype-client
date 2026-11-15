@@ -35,8 +35,10 @@ Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰�
 - **Android 可操作性（第二版）**：觸控改為自繪＋手動命中測試（不依賴 Control 佈局），
   方向鍵可按住連走、世界可滑動轉向、輕點互動；存檔／讀檔按鈕；對話開啟時不攔截對話框點擊。
   螢幕方向改為**橫向**（sensor landscape）。第一版實機回報「沒有有效操作」，此版尚未實機複驗。
-- **APK（v0.2.0）**：`app_base_git/releases/android/adventure-prototype-0.2.0-debug.apk`
-  （37,340,085 bytes、SHA-256 `eeb661af…6d17`、versionCode 2、debug 簽章、arm64-v8a、minSdk 24、橫向）。
+- **APK（v0.2.1）**：`app_base_git/releases/android/adventure-prototype-0.2.1-debug.apk`
+  （37,340,156 bytes、SHA-256 `4ec34e1e…b6fb`、versionCode 3、debug 簽章、arm64-v8a、minSdk 24、橫向）。
+- **更新驗證組合**：v0.2.0 release 保留，安裝 v0.2.0 後啟動會自動下載並安裝 v0.2.1（本體更新）；
+  內容同時提供 0.1.1 更新包（下一版啟動生效）。
 - **自動更新（v0.2.0）**：啟動檢查 GitHub Releases 的 `latest.json` → 下載 APK → 驗 sha256/size →
   透過 AndroidRuntime/FileProvider 開啟系統安裝程式；內容則檢查 `latest_data.json` →
   下載內容包 → 驗證 → 安裝到 `user://content_packs/`（下次啟動生效，失敗保留舊版）。

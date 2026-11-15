@@ -2,11 +2,11 @@
 
 | 項目 | 值 |
 | --- | --- |
-| 檔案 | `adventure-prototype-0.2.0-debug.apk` |
-| SHA-256 | `eeb661af51b0b23229306432ced9a0f5d1264c8862b6c7f65fdba86b0f2e6d17` |
-| 大小 | 37,340,085 bytes（約 35.6 MiB） |
-| 建置時間 | 2026-11-16 02:15（Asia/Taipei） |
-| 版本 | 0.2.0（versionCode 2） |
+| 檔案 | `adventure-prototype-0.2.1-debug.apk` |
+| SHA-256 | `4ec34e1ef7d896f66b3aedf5f924d481b38cef5a14e0a4a1da6d64f087ceb6fb` |
+| 大小 | 37,340,156 bytes（約 35.6 MiB） |
+| 建置時間 | 2026-11-16 02:19（Asia/Taipei） |
+| 版本 | 0.2.1（versionCode 3） |
 | 內容版本 | `base_world` 0.1.0（manifest SHA-256 `5c771076…75d3`，7 檔／4525 bytes） |
 | 套件 ID | `com.dsh.adventureprototype` |
 | minSdk / targetSdk / compileSdk | 24 / 36 / 36 |
@@ -24,7 +24,7 @@
 | --- | --- |
 | headless 測試 | **TESTS OK 332/332** |
 | apksigner verify | OK（debug 憑證） |
-| aapt2 badging | versionCode 2、versionName 0.2.0、minSdk 24、targetSdk 36、arm64-v8a |
+| aapt2 badging | versionCode 3、versionName 0.2.1、minSdk 24、targetSdk 36、arm64-v8a |
 | aapt2 xmltree | 已含 INTERNET 與 REQUEST_INSTALL_PACKAGES 權限 |
 | zipalign -c -v 4 | Verification successful |
 

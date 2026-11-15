@@ -9,7 +9,7 @@ extends Node
 ## 內容目錄解析順序：CLI `--content-dir=` > ProjectSettings `game/content_dir`
 ## > res://content。缺少內容時顯示 ErrorPanel，不崩潰、不進入遊戲。
 
-const GAME_VERSION := "0.2.0"
+const GAME_VERSION := "0.2.1"
 const ATLAS_TEXTURE_PATH := "res://assets/generated/placeholder_tiles.png"
 const ATLAS_META_PATH := "res://assets/generated/placeholder_tiles.json"
 const CAMERA_ZOOM := 3

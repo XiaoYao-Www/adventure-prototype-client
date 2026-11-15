@@ -694,7 +694,13 @@ func _test_input_map_and_project_settings() -> void:
 	th.check_eq(String(ProjectSettings.get_setting("display/window/stretch/mode", "")), "canvas_items", "stretch mode canvas_items")
 	th.check_eq(String(ProjectSettings.get_setting("display/window/stretch/aspect", "")), "expand", "stretch aspect expand")
 	th.check_eq(String(ProjectSettings.get_setting("rendering/renderer/rendering_method", "")), "gl_compatibility", "渲染方式 gl_compatibility")
-	th.check_eq(String(ProjectSettings.get_setting("application/config/version", "")), "0.2.0", "遊戲版本 0.2.0")
+	var main_script: Script = load("res://scripts/core/main.gd")
+	var main_constants: Dictionary = main_script.get_script_constant_map()
+	th.check_eq(
+		String(ProjectSettings.get_setting("application/config/version", "")),
+		String(main_constants.get("GAME_VERSION", "")),
+		"專案版本與 main.gd GAME_VERSION 一致"
+	)
 	th.check_eq(String(ProjectSettings.get_setting("application/run/main_scene", "")), "res://scenes/main.tscn", "主場景")
 
 	# CJK 字型：APK 內建 Noto Sans TC（OFL），避免中文顯示成方塊或空白

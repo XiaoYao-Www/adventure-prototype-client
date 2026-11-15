@@ -18,7 +18,7 @@
   （本體 APK：下載→驗 SHA-256→系統安裝；內容 DATA：下載內容包→驗證→user:// 安裝，下次啟動生效）、
   觸控、橫向、CJK 字型；測試 **332/332**。
 - APK：`releases/android/adventure-prototype-0.2.0-debug.apk`
-  （37,340,085 bytes、SHA-256 `eeb661af51b0b23229306432ced9a0f5d1264c8862b6c7f65fdba86b0f2e6d17`、versionCode 2）。
+
 - Release：推送 tag `v*`（本體）／`data-v*`（內容）由 GitHub Actions 自動建立。
 - 更新資訊固定網址：client `/releases/latest/download/latest.json`、data `/releases/latest/download/latest_data.json`。
 - 使用者回饋：第一版「手機沒有有效操作」→ 已重寫，**等實機複驗**；並要求橫向（已設 sensor landscape）。
