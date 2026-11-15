@@ -286,15 +286,18 @@ func _on_player_moved(_from_cell: Vector2i, _to_cell: Vector2i) -> void:
 
 
 func _on_dialogue_line_changed(speaker: String, text: String, line_index: int, total_lines: int) -> void:
+	_sync_touch_blocking()
 	dialogue_panel.show_line(speaker, text, line_index, total_lines)
 	hud.set_prompt("")
 
 
 func _on_dialogue_choices_ready(choice_texts: Array[String]) -> void:
+	_sync_touch_blocking()
 	dialogue_panel.show_choices(choice_texts)
 
 
 func _on_dialogue_finished() -> void:
+	_sync_touch_blocking()
 	dialogue_panel.hide_panel()
 	_update_prompt()
 
@@ -310,6 +313,12 @@ func _on_dialogue_choice_selected(choice_index: int) -> void:
 		error_panel.show_errors(choice_errors, [], "選項套用失敗")
 	_update_status()
 	_update_prompt()
+
+
+func _sync_touch_blocking() -> void:
+	if touch_controls == null:
+		return
+	touch_controls.set_input_blocked(session != null and session.is_in_dialogue())
 
 
 func _on_notice(text: String) -> void:
@@ -334,6 +343,7 @@ func _update_status() -> void:
 
 
 func _update_prompt() -> void:
+	_sync_touch_blocking()
 	if hud == null or session == null or not gameplay_ready:
 		return
 	if session.is_in_dialogue():

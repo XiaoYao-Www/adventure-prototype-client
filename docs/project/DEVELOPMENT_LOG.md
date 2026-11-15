@@ -152,3 +152,33 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
 ### 下一步
 
 見 `NEXT_ACTIONS.md`。
+
+## 2026-11-16（第二輪回饋）— 手機觸控失效修正、橫向、素材盤點
+
+### 使用者回饋
+
+1. 遊戲在手機上沒有有效的操作方法。
+2. 遊戲應為橫向（手機橫置）。
+3. 使用者提供了遊戲素材，要求自行分類標記，避免重複看圖。
+
+### 變更
+
+- 觸控控制重寫（`scripts/ui/touch_controls.gd`）：不再使用 Button/Control 佈局，
+  改為自繪按鈕 + 手動命中測試；支援按住連走（0.28s 後每 0.14s 一步）、世界滑動轉向、
+  世界輕點互動；對話開啟時 `set_input_blocked()` 不攔截對話框點擊。
+- 螢幕方向改為橫向（`display/window/handheld/orientation=4`，sensor landscape）。
+- 測試新增觸控命中、連走、滑動、阻擋、隱藏等案例；總數 288 → **300**。
+- 重建 APK（debug）：37,302,171 bytes、SHA-256 `6bd14f00f983cfb0f8b8ddd83baed6066990735130352f50e143e242e4c02470`。
+
+### 素材盤點（工作區 `assets/`）
+
+- Mini World Sprites（作者 Shade／merchant-shade.itch.io、16×16）：地形、自然、建築（5 種配色）、
+  角色（士兵／工人／怪物／冠軍）、動物、物件、UI、Templates；共 207 張 PNG。
+- Items16（作者 glionox／glionox.itch.io、16×16）：1244 張道具圖示，檔名 item1..item1244。
+- 合計 1451 張 PNG、2.42MB、sha256 無重複；授權狀態需逐包核對（來源頁面）。
+- 分類與標記輸出至 `game-content/asset_catalog/`；本輪尚未替換遊戲內 placeholder 美術。
+
+### 驗證
+
+- `bash tools/build_android.sh`：TESTS OK 300/300、APK 匯出＋簽章＋zipalign 驗證通過。
+- 未驗證：實機觸控與橫向顯示（本環境無 Android 裝置）。

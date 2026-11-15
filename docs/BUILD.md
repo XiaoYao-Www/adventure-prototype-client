@@ -65,7 +65,7 @@ timeout 240 "$G" --headless --path . --script res://tests/run_tests.gd \
   -- --content-dir=/workspace/自動遊戲開發/app_data_git
 ```
 
-- 2026-11-16 實測：**TESTS OK 288/288**（含觸控控制與 CJK 字型字形檢查）。
+- 2026-11-16 實測：**TESTS OK 300/300**（含觸控命中／連走／滑動／對話阻擋與 CJK 字型字形檢查）。
 - 輸出最後一行 `TESTS OK n/n` 或 `TESTS FAILED ...`；exit code 0/1。
 - 無 `--content-dir` 時，真實內容測試會標記 `[SKIP]`，不得視為通過。
 

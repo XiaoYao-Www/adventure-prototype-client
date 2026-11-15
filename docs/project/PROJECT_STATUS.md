@@ -1,12 +1,12 @@
 # 專案狀態（權威）
 
 > 本文件是專案唯一權威狀態摘要。工作區 `STATE/` 僅保留指向此處的說明。
-> 最後更新：2026-11-16（Asia/Taipei），debug APK 建置與建置面驗證完成後由 Captain 更新。
+> 最後更新：2026-11-16（Asia/Taipei），依手機回饋修正觸控與橫向後重建 APK。
 
 ## 目前階段
 
 - **`Phase 3 — 垂直切片 v0.1：完成（headless 驗證）`**
-- **`Phase 4 — Android debug APK：已建置並完成建置面驗證；實機安裝／操作未驗證`**
+- **`Phase 4 — Android debug APK：已建置並完成建置面驗證；第二版修正觸控與橫向，待實機複驗`**
 - 下一步：使用者在 Android 裝置安裝測試（這是目前唯一無法由 DSH 完成的驗收）。
 
 ## 專案方向（已確認）
@@ -29,10 +29,11 @@
 
 - **已可執行（headless）**：載入內容 → 格子移動／碰撞、互動、逐句對話＋選項、
   `set_flag`/`give_item`、雙向 portal、F5/F9 存檔讀檔、缺內容顯示錯誤。
-- **Android 可操作性**：已內建觸控虛擬方向鍵、互動、存檔／讀檔按鈕（mobile 自動顯示、
-  桌機隱藏）；對話框與選項可用觸控點擊。
-- **APK**：`app_base_git/releases/android/adventure-prototype-0.1.0-debug.apk`
-  （37,298,075 bytes、SHA-256 `1fda822d…4af3`、debug 簽章、arm64-v8a、minSdk 24）。
+- **Android 可操作性（第二版）**：觸控改為自繪＋手動命中測試（不依賴 Control 佈局），
+  方向鍵可按住連走、世界可滑動轉向、輕點互動；存檔／讀檔按鈕；對話開啟時不攔截對話框點擊。
+  螢幕方向改為**橫向**（sensor landscape）。第一版實機回報「沒有有效操作」，此版尚未實機複驗。
+- **APK（第二版）**：`app_base_git/releases/android/adventure-prototype-0.1.0-debug.apk`
+  （37,302,171 bytes、SHA-256 `6bd14f00…2470`、debug 簽章、arm64-v8a、minSdk 24、橫向）。
 - **仍未驗證**：實機安裝／啟動／畫面／中文渲染／觸控手感／音效；Windows 執行。
 
 ## 已驗證能力（實際命令與結果）
@@ -44,7 +45,7 @@
 | `node tools/build_content_manifest.mjs ../app_data_git --check` | **MANIFEST OK**（4525 bytes） |
 | `node tools/sync_content_bundle.mjs` | **BUNDLE OK**（res://content = game-content 0.1.0 快照） |
 | Godot `--import` | exit 0、無 GDScript 錯誤 |
-| Godot headless 測試 | **TESTS OK 288/288**（內容、格子、對話、存檔、portal、觸控、CJK 字型） |
+| Godot headless 測試 | **TESTS OK 300/300**（內容、格子、對話、存檔、portal、觸控命中／連走／滑動、CJK 字型） |
 | 主場景 headless | exit 0、`map_start_village` 玩家 `(3,6)` |
 | 缺內容容錯 | `E_NO_MANIFEST`＋ErrorPanel、不崩潰 |
 | APK 匯出（debug） | 成功；zipalign → apksigner → verify 全通過 |
@@ -70,6 +71,14 @@
 - Node.js v24.21.0（內容工具用，無 npm 依賴）。
 - 缺少：GPU、顯示器、Android 實機／模擬器 → 只能 headless 建置與邏輯驗證。
 - 重要：Java 工具需 UTF-8 locale（`LANG=C.UTF-8`），否則非 ASCII 路徑會失敗。
+
+## 素材狀態（2026-11-16 使用者提供）
+
+- 工作區 `assets/`：Mini World Sprites（207 張，16×16 地形／建築／角色／物件等）與
+  Items16（1244 張 16×16 道具圖示），共 1451 張 PNG、2.42MB、無重複內容。
+- 已建立分類與標記目錄於 `game-content/asset_catalog/`（見該倉庫）；**授權仍在核對**，
+  未經確認前不得進入公開 APK。
+- 目前 APK 仍使用專案自製 placeholder 與內建字型，尚未替換為這些素材。
 
 ## 目前阻塞
 

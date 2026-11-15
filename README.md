@@ -22,8 +22,9 @@ Android 優先、2D、格子式移動的冒險探索 RPG 遊戲本體。
   來源優先序 CLI `--content-dir=` > ProjectSettings `game/content_dir` > `res://content`。
 - 畫面：`_draw` 繪製格子與實體（v0.1 不用 TileMapLayer），placeholder atlas 或色塊備援；
   Camera2D 整數 3x 縮放跟隨玩家。
-- 觸控輸入：Android/mobile 自動顯示虛擬方向鍵、互動、存檔／讀檔按鈕（觸控目標 ≥ 48px）；桌機自動隱藏。
-- Headless 測試：288 項斷言（fixtures + 真實 game-content，實測 288/288）。
+- 觸控輸入：自繪方向鍵（可按住連走）＋互動＋存檔／讀檔；世界區域可滑動轉向與輕點互動。Android/mobile 顯示、桌機隱藏；對話開啟時不攔截對話框點擊。
+- 畫面：橫向遊玩（sensor landscape，左右橫置皆可）。
+- Headless 測試：300 項斷言（fixtures + 真實 game-content，實測 300/300）。
 
 ## 目錄結構
 
@@ -123,6 +124,7 @@ timeout 120 "$G" --headless --path . --script res://tests/run_tests.gd \
 - 成品：[`releases/android/adventure-prototype-0.1.0-debug.apk`](releases/android/adventure-prototype-0.1.0-debug.apk)
   （約 35.6 MiB；建置資訊與 SHA-256 見 `releases/android/BUILD_INFO.md`）。
 - 套件：`com.dsh.adventureprototype`、versionCode 1、versionName 0.1.0、minSdk 24、targetSdk 36、**arm64-v8a only**。
+- 螢幕方向：橫向（sensor landscape）。
 - **debug 簽章**（CN=Android Debug），只供安裝測試，不可用於商店發布。
 - 安裝：`adb install -r releases/android/adventure-prototype-0.1.0-debug.apk`
   （Android 7.0 以上、arm64 裝置）。

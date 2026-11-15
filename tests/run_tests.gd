@@ -9,6 +9,9 @@ extends SceneTree
 ## 未執行的檢查以 [SKIP] 標記並在結尾列出原因。
 
 const FIXTURES_DEFAULT := "res://tests/fixtures"
+# 與 touch_controls.gd 的常數一致（測試按住連走的時間點）
+const HOLD_DELAY_TEST := 0.28
+const REPEAT_INTERVAL_TEST := 0.14
 const VALID_FIXTURE := "valid_content"
 const SAVE_TEST_PATH := "user://test_save_roundtrip.json"
 const SAVE_BAD_VERSION_PATH := "user://test_save_bad_version.json"
@@ -812,36 +815,89 @@ func _test_touch_controls() -> void:
 	th.section("觸控控制（Android 無鍵盤可操作性）")
 	var controls := TouchControls.new()
 	root.add_child(controls)
-	th.check_eq(controls.dpad_button_count(), 4, "方向鍵有 4 個")
-	for direction: Vector2i in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
-		var button: Button = controls.direction_button(direction)
-		th.check_true(button != null, "方向鍵存在：" + str(direction))
-		if button != null:
-			th.check_true(
-				button.custom_minimum_size.x >= 48.0 and button.custom_minimum_size.y >= 48.0,
-				"方向鍵觸控尺寸 >= 48px"
-			)
+	controls.set_visibility_override(true)
+	controls.size = Vector2(960, 540)
+	var rects: Dictionary = controls.button_rects()
+	for key: String in ["up", "down", "left", "right", "interact", "save", "load"]:
+		th.check_true(rects.has(key), "有觸控區域：" + key)
+		if rects.has(key):
+			var rect: Rect2 = rects[key]
+			th.check_true(rect.size.x >= 48.0 and rect.size.y >= 48.0, key + " 觸控區域 >= 48px")
+	th.check_eq(controls.hit_test(rects["up"].get_center()), "up", "命中測試（上）")
+	th.check_eq(controls.hit_test(Vector2(480, 300)), "", "世界區域不命中按鈕")
+
 	var seen: Array = []
 	controls.move_pressed.connect(func(direction: Vector2i) -> void: seen.append(direction))
-	controls.direction_button(Vector2i.DOWN).pressed.emit()
-	th.check_eq(seen.size(), 1, "按下方向鍵會發出 move_pressed")
-	th.check_eq(seen[0], Vector2i.DOWN, "方向正確")
-	var interact_count: Array = [0]
-	controls.interact_pressed.connect(func() -> void: interact_count[0] += 1)
-	controls.interact_button().pressed.emit()
-	th.check_eq(interact_count[0], 1, "互動鍵發出 interact_pressed")
-	th.check_true(controls.interact_button().custom_minimum_size.x >= 48.0, "互動鍵觸控尺寸足夠")
-	th.check_true(controls.save_button() != null, "存檔鍵存在")
-	th.check_true(controls.load_button() != null, "讀檔鍵存在")
-	var save_count: Array = [0]
-	var load_count: Array = [0]
-	controls.save_pressed.connect(func() -> void: save_count[0] += 1)
-	controls.load_pressed.connect(func() -> void: load_count[0] += 1)
-	controls.save_button().pressed.emit()
-	controls.load_button().pressed.emit()
-	th.check_eq(save_count[0], 1, "存檔鍵發出 save_pressed")
-	th.check_eq(load_count[0], 1, "讀檔鍵發出 load_pressed")
+	controls._input(_touch_event(rects["up"].get_center(), true))
+	th.check_eq(seen.size(), 1, "按下方向鍵發出 move_pressed")
+	th.check_eq(seen[0], Vector2i.UP, "方向正確（上）")
+	controls._input(_touch_event(rects["up"].get_center(), false))
+	th.check_eq(seen.size(), 1, "放開不重複觸發")
+
+	# 按住連走
+	seen.clear()
+	controls._input(_touch_event(rects["right"].get_center(), true))
+	var after_press: int = seen.size()
+	controls._process(HOLD_DELAY_TEST + 0.001)
+	controls._process(REPEAT_INTERVAL_TEST)
+	th.check_true(seen.size() > after_press, "按住方向鍵會連走")
+	if seen.size() > 0:
+		th.check_eq(seen[seen.size() - 1], Vector2i.RIGHT, "連走方向正確")
+	controls._input(_touch_event(rects["right"].get_center(), false))
+
+	# 動作按鈕
+	var counts: Dictionary = {"interact": 0, "save": 0, "load": 0}
+	controls.interact_pressed.connect(func() -> void: counts["interact"] += 1)
+	controls.save_pressed.connect(func() -> void: counts["save"] += 1)
+	controls.load_pressed.connect(func() -> void: counts["load"] += 1)
+	for key: String in ["interact", "save", "load"]:
+		controls._input(_touch_event((rects[key] as Rect2).get_center(), true))
+		controls._input(_touch_event((rects[key] as Rect2).get_center(), false))
+	th.check_eq(counts["interact"], 1, "互動鍵發出 interact_pressed")
+	th.check_eq(counts["save"], 1, "存檔鍵發出 save_pressed")
+	th.check_eq(counts["load"], 1, "讀檔鍵發出 load_pressed")
+
+	# 世界輕點 = 互動
+	counts["interact"] = 0
+	var world_point := Vector2(480, 300)
+	controls._input(_touch_event(world_point, true))
+	controls._input(_touch_event(world_point, false))
+	th.check_eq(counts["interact"], 1, "世界輕點發出 interact_pressed")
+
+	# 世界滑動 = 移動
+	seen.clear()
+	controls._input(_touch_event(world_point, true))
+	var drag := InputEventScreenDrag.new()
+	drag.index = 0
+	drag.position = world_point + Vector2(90, 10)
+	controls._input(drag)
+	controls._input(_touch_event(world_point + Vector2(90, 10), false))
+	th.check_true(seen.size() >= 1, "世界滑動會發出 move_pressed")
+	if seen.size() >= 1:
+		th.check_eq(seen[0], Vector2i.RIGHT, "滑動方向正確（右）")
+
+	# 對話中不攔截
+	controls.set_input_blocked(true)
+	seen.clear()
+	controls._input(_touch_event(rects["down"].get_center(), true))
+	th.check_eq(seen.size(), 0, "對話中觸控控制不移動")
+	controls.set_input_blocked(false)
+
+	# 隱藏時不處理輸入
+	controls.set_visibility_override(false)
+	seen.clear()
+	controls._input(_touch_event(rects["down"].get_center(), true))
+	th.check_eq(seen.size(), 0, "隱藏時不處理觸控")
+	controls.set_visibility_override(true)
 	controls.queue_free()
+
+
+func _touch_event(point: Vector2, pressed: bool) -> InputEventScreenTouch:
+	var event := InputEventScreenTouch.new()
+	event.index = 0
+	event.position = point
+	event.pressed = pressed
+	return event
 
 
 func _test_real_content() -> void:

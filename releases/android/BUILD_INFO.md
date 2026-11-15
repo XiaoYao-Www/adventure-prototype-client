@@ -3,8 +3,8 @@
 | 項目 | 值 |
 | --- | --- |
 | 檔案 | `adventure-prototype-0.1.0-debug.apk` |
-| SHA-256 | `1fda822d9b6f8d8230693fb6568702dc886b932ca9a0c06d62b25e95b11a4af3` |
-| 大小 | 37,298,075 bytes（約 35.6 MiB） |
+| SHA-256 | `6bd14f00f983cfb0f8b8ddd83baed6066990735130352f50e143e242e4c02470` |
+| 大小 | 37,302,171 bytes（約 35.6 MiB） |
 | 建置時間 | 2026-11-16 01:48（Asia/Taipei） |
 | 遊戲版本 | 0.1.0（`application/config/version`） |
 | 內容版本 | `base_world` 0.1.0（manifest SHA-256 `5c771076d7bb7c7188be2999a410a6703ed3c462a4da15eac43a46d5e4dd75d3`，7 檔／4525 bytes） |
@@ -13,10 +13,10 @@
 | versionCode / versionName | `1` / `0.1.0` |
 | minSdk / targetSdk / compileSdk | 24 / 36 / 36 |
 | 架構 | `arm64-v8a` only |
-| 螢幕方向 | `sensor`（專案設定 `display/window/handheld/orientation=6`；產品方向尚未定案） |
+| 螢幕方向 | **橫向**：`sensor landscape`（`display/window/handheld/orientation=4`，左右橫置皆可） |
 | 渲染 | `gl_compatibility`（ETC2/ASTC import 已啟用） |
 | 啟動圖示 | Godot 預設圖示（尚未設計遊戲 icon；不影響安裝與啟動） |
-| 輸入 | 觸控虛擬方向鍵＋互動＋存檔／讀檔按鈕（Android/mobile 自動顯示）；鍵盤 WASD／方向鍵、E／Space／Enter、F5／F9 |
+| 輸入 | 觸控：自繪方向鍵（可按住連走）＋互動＋存檔／讀檔、世界滑動轉向、輕點互動（Android 顯示）；鍵盤 WASD／方向鍵、E／Space／Enter、F5／F9 |
 | 內建字型 | Noto Sans TC Variable（SIL OFL 1.1，見 `assets/fonts/OFL.txt`） |
 | 簽章 | debug keystore：`CN=Android Debug, O=Android, C=US`；憑證 SHA-256 `a354606f6c0110c48e6c2e17834c442886bd71af6e39c9f17663ae4e03959632` |
 
@@ -35,7 +35,7 @@ bash /workspace/自動遊戲開發/tools/build_android.sh
 
 | 檢查 | 結果 |
 | --- | --- |
-| 專案 headless 測試 | **TESTS OK 288/288**（含觸控控制與 CJK 字型字形檢查） |
+| 專案 headless 測試 | **TESTS OK 300/300**（含觸控命中／連走／滑動／對話阻擋與 CJK 字型） |
 | `apksigner verify --print-certs` | OK，debug 憑證 |
 | `aapt2 dump badging` | package/version/minSdk/targetSdk/native-code 如上表 |
 | `zipalign -c -v 4` | Verification successful |

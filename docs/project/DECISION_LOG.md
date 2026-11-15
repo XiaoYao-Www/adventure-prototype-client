@@ -24,9 +24,12 @@
 | D-0017 | 2026-11-16 | 將 debug APK 成品提交進 game-client 倉庫（`releases/android/`），作為「不提交產生檔」規則的明確例外 | accepted | 使用者明確要求「編譯成 APK，提交進倉庫」 | git、release |
 | D-0018 | 2026-11-16 | APK 內建內容改為 game-content 的建置快照：`res://content` 由 `tools/sync_content_bundle.mjs` 從 game-content 驗證後產生，移除 `boot_*` bootstrap；此決策取代 D-0011 | accepted | 讓 APK 內含權威內容；快照可重建、manifest 雜湊可追溯 | content contract、release |
 | D-0019 | 2026-11-16 | 內建 Noto Sans TC Variable（SIL OFL 1.1）作為專案預設字型 | accepted | Godot 預設字型不含 CJK、Android 不保證系統字型；授權允許內嵌散布 | client repo、art/font |
-| D-0020 | 2026-11-16 | APK 螢幕方向先設 `sensor`，不鎖定直向／橫向 | proposed | 產品方向未定案；先讓裝置可旋轉，待使用者視覺驗收後決定 | UX |
+| D-0020 | 2026-11-16 | APK 螢幕方向：**橫向**（`sensor landscape`，左右橫置皆可） | accepted | 使用者 2026-11-16 明確指示「遊戲應該要是橫版（手機橫置遊玩）」 | UX、Android |
 | D-0021 | 2026-11-16 | 建置 Java 工具鏈一律以 UTF-8 locale 執行（`LANG=C.UTF-8`） | accepted | 非 ASCII 工作區路徑在非 UTF-8 locale 下會讓 Java 路徑變成 `?`，導致 keytool/apksigner 失敗 | 建置流程 |
 | D-0022 | 2026-11-16 | 加入觸控虛擬控制（方向鍵、互動、存檔、讀檔），mobile 自動顯示、桌機隱藏 | accepted | Android 手機無鍵盤，缺少觸控即無法遊玩；已加 12 項測試 | client UI、Android |
+
+| D-0023 | 2026-11-16 | 觸控控制改為「自繪 UI + 手動命中測試」實作（不再用 Button 節點）；支援按住連走、世界滑動轉向、輕點互動；對話時阻擋 | accepted | 第一版實機回報「沒有有效操作方法」，需移除 Control 佈局依賴並增加可測試性；已用 InputEvent 模擬測試 | client UI、Android 輸入 |
+| D-0024 | 2026-11-16 | 導入使用者提供的素材：Mini World Sprites 與 Items16；先建立 asset_catalog 分類／雜湊／授權狀態，暫不進 APK | accepted | 使用者要求自行分類與標記；授權尚未逐包核對（license_unverified），不得發布 | art pipeline、content repo |
 
 ## 變更規則
 
