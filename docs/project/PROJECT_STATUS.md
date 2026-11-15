@@ -20,12 +20,12 @@
 
 | 規格名稱 | 實際路徑 | 角色 | branch | commit |
 | --- | --- | --- | --- | --- |
-| `game-client` | `/workspace/自動遊戲開發/app_base_git` | 程式、場景、測試、建置、APK 成品 | `main` | 本地 7 commits；remote `XiaoYao-Www/adventure-prototype-client`（**推送待 Deploy key**） |
-| `game-content` | `/workspace/自動遊戲開發/app_data_git` | 內容資料、schema、可發布內容來源 | `main` | 本地 2 commits；remote `XiaoYao-Www/adventure-prototype-data`（**推送待 Deploy key**） |
+| `game-client` | `/workspace/自動遊戲開發/app_base_git` | 程式、場景、測試、建置、APK 成品 | `main` | **已推送**：`45b2b34` → https://github.com/XiaoYao-Www/adventure-prototype-client |
+| `game-content` | `/workspace/自動遊戲開發/app_data_git` | 內容資料、schema、可發布內容來源 | `main` | **已推送**：`494eb0e` → https://github.com/XiaoYao-Www/adventure-prototype-data |
 
-兩倉庫已設定 GitHub remote（SSH deploy key），**尚未 push**：需要使用者把
-`tools/ssh/id_ed25519_client.pub`、`id_ed25519_data.pub` 分別加入對應 repo 的
-Deploy keys（勾選 Allow write access）後，執行 `bash tools/push_to_github.sh`。
+兩倉庫已設定 GitHub remote 並完成首次推送（2026-11-16）：
+client `45b2b34`、data `494eb0e`，遠端 `main` 與本地一致；已用 GitHub API 與 raw 檔案驗證。
+Deploy key（每倉庫一把、write）僅存在工作區 `tools/ssh/`，私鑰不進 Git。
 
 ## v0.1 可玩狀態
 

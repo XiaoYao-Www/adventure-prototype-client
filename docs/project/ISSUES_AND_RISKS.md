@@ -26,4 +26,4 @@
 | R-022 | 美術整合 | 素材尚未替換遊戲內 placeholder（目前畫面仍是專案自製圖與色塊） | 中 | open | 任務 3：依 asset_catalog 挑選地形／角色並建置 TileSet 與替換（Items16 僅內部測試用）。 |
 | R-023 | 素材 | Items16 無語意檔名／對照表，1244 張圖示尚未逐張語意分類 | 低 | open | 需要時用聯絡表定位編號再建立 mapping；不要用編號猜類型。 |
 
-| R-024 | 遠端 | GitHub 推送待使用者加入 deploy key（Allow write access）；目前 SSH 認證失敗 | 中 | open | 加入金鑰後執行 `bash tools/push_to_github.sh`，以 `git ls-remote`／GitHub API 驗證。 |
+| R-024 | 遠端 | GitHub 推送 | 中 | **resolved** | 2026-11-16 首次推送成功：client `45b2b34`、data `494eb0e`；`git ls-remote` 與 API 驗證一致。 |

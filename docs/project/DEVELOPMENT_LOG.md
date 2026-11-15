@@ -207,3 +207,13 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
 - 現況：GitHub SSH 可連（22/443 皆可），但金鑰尚未加入 GitHub → `Permission denied (publickey)`。
 - 待使用者把兩把公鑰加入對應 repo 的 Deploy keys（Allow write access），
   執行 `bash tools/push_to_github.sh` 即完成首次推送並驗證。
+
+### GitHub 首次推送（2026-11-16）
+
+- 使用者在兩個 repo 的 Deploy keys（Allow write access）加入公鑰後，SSH 認證成功。
+- `bash tools/push_to_github.sh` 推送完成：
+  - client `45b2b34bd77022e95830b93283d4ed5b64506d04` → `refs/heads/main`
+  - data `494eb0e0587918eceb46bd4044919380dd0f301f` → `refs/heads/main`
+- 驗證：`git ls-remote origin main` 與本地 HEAD 一致；GitHub API commits/main 回傳相同 SHA；
+  `raw.githubusercontent.com` 可讀到兩倉庫 README。
+- 註：GitHub API 的 repo `size` 欄位即時顯示 0（更新有延遲），但 commits 與 raw 內容已確認。
