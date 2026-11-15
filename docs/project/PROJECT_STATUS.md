@@ -33,7 +33,7 @@
   方向鍵可按住連走、世界可滑動轉向、輕點互動；存檔／讀檔按鈕；對話開啟時不攔截對話框點擊。
   螢幕方向改為**橫向**（sensor landscape）。第一版實機回報「沒有有效操作」，此版尚未實機複驗。
 - **APK（第二版）**：`app_base_git/releases/android/adventure-prototype-0.1.0-debug.apk`
-  （37,302,171 bytes、SHA-256 `6bd14f00…2470`、debug 簽章、arm64-v8a、minSdk 24、橫向）。
+  （37,310,532 bytes、SHA-256 `8707ce53…1b62`、debug 簽章、arm64-v8a、minSdk 24、橫向）。
 - **仍未驗證**：實機安裝／啟動／畫面／中文渲染／觸控手感／音效；Windows 執行。
 
 ## 已驗證能力（實際命令與結果）

@@ -17,7 +17,7 @@
 - 階段：**Phase 4**。APK 第二版已建置：橫向、觸控重寫（自繪＋命中測試＋按住連走＋滑動/輕點）、
   CJK 字型；測試 **300/300**。
 - APK：`releases/android/adventure-prototype-0.1.0-debug.apk`
-  （37,302,171 bytes、SHA-256 `6bd14f00f983cfb0f8b8ddd83baed6066990735130352f50e143e242e4c02470`）。
+  （37,310,532 bytes、SHA-256 `8707ce53b4460bc229fab2403a30cf584a01eeb35edf7715933eaf244ce21b62`）。
 - 使用者回饋：第一版「手機沒有有效操作」→ 已重寫，**等實機複驗**；並要求橫向（已設 sensor landscape）。
 - 素材：使用者提供 Mini World Sprites（CC0-1.0）＋ Items16（可商用/修改、禁止再散布），
   1451 張 16×16 PNG；已建立 catalog／授權／聯絡表（content `494eb0e`），**尚未接入遊戲**。

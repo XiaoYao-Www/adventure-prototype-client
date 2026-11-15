@@ -3,9 +3,9 @@
 | 項目 | 值 |
 | --- | --- |
 | 檔案 | `adventure-prototype-0.1.0-debug.apk` |
-| SHA-256 | `6bd14f00f983cfb0f8b8ddd83baed6066990735130352f50e143e242e4c02470` |
-| 大小 | 37,302,171 bytes（約 35.6 MiB） |
-| 建置時間 | 2026-11-16 01:48（Asia/Taipei） |
+| SHA-256 | `8707ce53b4460bc229fab2403a30cf584a01eeb35edf7715933eaf244ce21b62` |
+| 大小 | 37,310,532 bytes（約 35.6 MiB） |
+| 建置時間 | 2026-11-16 02:00（Asia/Taipei） |
 | 遊戲版本 | 0.1.0（`application/config/version`） |
 | 內容版本 | `base_world` 0.1.0（manifest SHA-256 `5c771076d7bb7c7188be2999a410a6703ed3c462a4da15eac43a46d5e4dd75d3`，7 檔／4525 bytes） |
 | 套件 ID | `com.dsh.adventureprototype` |

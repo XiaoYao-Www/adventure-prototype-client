@@ -169,6 +169,8 @@ APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
 - 螢幕方向改為橫向（`display/window/handheld/orientation=4`，sensor landscape）。
 - 測試新增觸控命中、連走、滑動、阻擋、隱藏等案例；總數 288 → **300**。
 - 重建 APK（debug）：37,302,171 bytes、SHA-256 `6bd14f00f983cfb0f8b8ddd83baed6066990735130352f50e143e242e4c02470`。
+- 追加觸控診斷輸出後再重建：37,310,532 bytes、SHA-256 `8707ce53b4460bc229fab2403a30cf584a01eeb35edf7715933eaf244ce21b62`
+  （logcat 可看到 `[touch] ready ...` 與首次觸控的命中結果，便於實機追查）。
 
 ### 素材盤點（工作區 `assets/`）
 

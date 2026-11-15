@@ -27,6 +27,7 @@ const TAP_MAX_DISTANCE := 18.0
 var _blocked: bool = false
 var _visibility_override: Variant = null
 var _font: Font = null
+var _first_press_logged: bool = false
 
 # 按住連走
 var _held_direction: Vector2i = Vector2i.ZERO
@@ -50,6 +51,9 @@ func _ready() -> void:
 	_sync_size()
 	_apply_visibility()
 	queue_redraw()
+	print("[touch] ready platform_touch=%s visible=%s viewport=%s" % [
+		_is_touch_platform(), visible, get_viewport_rect().size
+	])
 
 
 func _sync_size() -> void:
@@ -144,6 +148,9 @@ func _input(event: InputEvent) -> void:
 
 
 func _handle_press(touch_index: int, point: Vector2) -> void:
+	if not _first_press_logged:
+		_first_press_logged = true
+		print("[touch] first press at %s hit=%s size=%s" % [point, hit_test(point), size])
 	_press_touch_index = touch_index
 	_press_start = point
 	_press_moved = false
