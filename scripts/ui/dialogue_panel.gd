@@ -74,7 +74,7 @@ func show_line(speaker: String, text: String, line_index: int, total_lines: int)
 	_has_choices = false
 	_speaker_label.text = speaker
 	_text_label.text = text
-	_hint_label.text = "第 %d/%d 句｜E / Space / Enter 繼續" % [line_index + 1, total_lines]
+	_hint_label.text = "第 %d/%d 句｜點擊或按 E 繼續" % [line_index + 1, total_lines]
 	visible = true
 
 

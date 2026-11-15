@@ -1,0 +1,14 @@
+{
+  "generated": true,
+  "generated_by": "tools/sync_content_bundle.mjs",
+  "note": "此目錄是 APK 內建內容快照，不是權威內容；請勿手動編輯，重新執行同步工具。",
+  "source_content_dir": "game-content (app_data_git)",
+  "content_id": "base_world",
+  "content_version": "0.1.0",
+  "schema_version": 1,
+  "min_game_version": "0.1.0",
+  "manifest_sha256": "5c771076d7bb7c7188be2999a410a6703ed3c462a4da15eac43a46d5e4dd75d3",
+  "file_count": 7,
+  "total_bytes": 4525,
+  "synced_at_utc": "2026-11-15T17:47:46.198Z"
+}

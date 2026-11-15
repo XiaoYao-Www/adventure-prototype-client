@@ -1,109 +1,123 @@
-# 建置與 headless 驗證
+# 建置與驗證（Linux headless → Android APK）
 
-## 環境（實測）
+## 環境（實測於 2026-11-16）
 
 - Godot **4.7.2 stable** Linux x86_64：`/workspace/自動遊戲開發/tools/godot/Godot_v4.7.2-stable_linux.x86_64`
-- 無 GPU／顯示器 → 只能 headless 驗證。
-- 無 Java／Android SDK／Godot export templates → **Android 尚未建置**（見最後一節）。
-- stderr 可能出現 `libfontconfig.so.1: cannot open shared object file`；這是環境缺字型庫，
-  非致命（Label 可建立，headless 不影響邏輯）。不要為此安裝套件。
+- Temurin **JDK 17.0.21**：`/workspace/自動遊戲開發/tools/jdk17`
+- Android **build-tools 36.1.0**、**platform-tools**、**platform android-36**：
+  `/workspace/自動遊戲開發/tools/android-sdk`
+- Godot **Android export templates 4.7.2.stable**：
+  `/workspace/自動遊戲開發/tools/home/data/godot/export_templates/4.7.2.stable/`
+- debug keystore（僅供測試簽章）：`/workspace/自動遊戲開發/tools/android-keystore/debug.keystore`
+- 無 GPU／顯示器 → 以 headless 建置與驗證；畫面外觀與實機行為**未驗證**。
+- stderr 可能出現 `libfontconfig.so.1: cannot open shared object file`；環境缺字型庫，
+  非致命。專案已內建 CJK 字型（見 `docs/ASSETS.md`）。
 
-每次執行前：
+工具都在工作區 `tools/`（不進 Git）；Android SDK 使用說明與授權注意事項見工作區
+`tools/README.md`。
+
+### 重要：Java 必須使用 UTF-8 locale
+
+工作區路徑含非 ASCII 字元，若 locale 不是 UTF-8，Java 會把路徑轉成 `?`，導致
+`keytool`／`apksigner` 讀不到 `java.security`。執行建置前必須：
+
+```bash
+export LANG=C.UTF-8 LC_ALL=C.UTF-8
+```
+
+## 每次執行前
 
 ```bash
 export G=/workspace/自動遊戲開發/tools/godot/Godot_v4.7.2-stable_linux.x86_64
 export HOME=/workspace/自動遊戲開發/tools/home
 export XDG_CONFIG_HOME=$HOME/config XDG_DATA_HOME=$HOME/data
+export JAVA_HOME=/workspace/自動遊戲開發/tools/jdk17
+export ANDROID_HOME=/workspace/自動遊戲開發/tools/android-sdk
+export LANG=C.UTF-8 LC_ALL=C.UTF-8
+export PATH="$JAVA_HOME/bin:$ANDROID_HOME/build-tools/36.1:$PATH"
 cd /workspace/自動遊戲開發/app_base_git
 ```
 
-## 1. 匯入
+## 1. 同步內建內容快照（APK 用）
 
 ```bash
-timeout 120 "$G" --headless --path . --import
+node tools/sync_content_bundle.mjs --source ../app_data_git --dest content
 ```
 
-- 第一次開啟專案、或 `assets/generated/` 變更後必須執行（會產生 `.godot/` 快取與
-  貼圖 import 資料）。
-- 成功結束碼 0；`.godot/` 不進版控（見 `.gitignore`）。
+- 從 `game-content` 驗證 manifest 的 sha256/size 後複製到 `res://content/`。
+- 產生 `content/BUNDLE_SOURCE.json`（來源版本、manifest 雜湊、同步時間）。
+- **不要手動編輯 `res://content/`**；內容更新流程：改 `game-content` → 重建 manifest
+  → 執行本工具 → 重建 APK。
 
-## 2. 自動測試
+## 2. 匯入
 
 ```bash
-timeout 120 "$G" --headless --path . --script res://tests/run_tests.gd \
+timeout 180 "$G" --headless --path . --import
+```
+
+第一次開啟專案、或 `assets/`、`content/` 變更後必須執行（產生 `.godot/` 快取）。
+`.godot/` 不進版控。
+
+## 3. 自動測試
+
+```bash
+timeout 240 "$G" --headless --path . --script res://tests/run_tests.gd \
   -- --content-dir=/workspace/自動遊戲開發/app_data_git
 ```
 
-- 選用參數：`--fixtures-dir=<path>`（預設 `res://tests/fixtures`）。
-- 輸出最後一行：`TESTS OK n/n` 或 `TESTS FAILED ...`；exit code 0/1。
-- 沒有 `--content-dir` 或 game-content 尚無 `manifest.json` 時，真實內容測試標記
-  `[SKIP]`，**不得**視為通過。
-- 測試涵蓋：格子邊界／可通行／portal、內容載入（manifest 雜湊成功／篡改失敗、
-  缺 manifest、未知 effect、引用完整性、地圖幾何、不安全路徑）、effects、
-  對話流程、repeatable=false 完成紀錄、portal 與抵達抑制、存檔往返／版本錯誤、
-  輸入 map、WorldView atlas、PlayerController Tween、主場景 headless 載入。
+- 2026-11-16 實測：**TESTS OK 288/288**（含觸控控制與 CJK 字型字形檢查）。
+- 輸出最後一行 `TESTS OK n/n` 或 `TESTS FAILED ...`；exit code 0/1。
+- 無 `--content-dir` 時，真實內容測試會標記 `[SKIP]`，不得視為通過。
 
-## 3. 主場景 headless 啟動
+## 4. 建置 debug APK
 
 ```bash
-# 使用內建 res://content bootstrap
-timeout 120 "$G" --headless --path . --quit-after 120
-
-# 使用 game-content 真實內容
-timeout 120 "$G" --headless --path . --quit-after 120 -- \
-  --content-dir=/workspace/自動遊戲開發/app_data_git
+mkdir -p releases/android
+timeout 420 "$G" --headless --path . --export-debug "Android" \
+  "$PWD/releases/android/adventure-prototype-0.1.0-debug.apk"
 ```
 
-- `--quit-after 120`：執行 120 幀後結束；exit code 0 代表主場景載入、初始化與
-  前 120 幀沒有 GDScript 錯誤。
-- **不代表畫面正確**：沒有顯示器／GPU，視覺外觀（版面、色彩、縮放、對話框）未驗證。
-- 內容路徑不存在時應顯示 ErrorPanel 且不崩潰（可測試：
-  `-- --content-dir=/tmp/definitely_missing_content`）。
+- preset 定義於 `export_presets.cfg`（非 gradle 建置、arm64-v8a、minSdk 24、targetSdk 36）。
+- 2026-11-16 實測：匯出成功，輸出約 **35.6 MiB**，自動完成 zipalign → apksigner 簽章 →
+  APK 驗證。
+- 完整可重現流程（含驗證）在工作區 `tools/build_android.sh`。
 
-## 4. 在 Windows 執行（未驗證）
+## 5. 驗證 APK
+
+```bash
+APK=releases/android/adventure-prototype-0.1.0-debug.apk
+"$ANDROID_HOME/build-tools/36.1/apksigner" verify --print-certs "$APK"
+"$ANDROID_HOME/build-tools/36.1/aapt2" dump badging "$APK" | head
+"$ANDROID_HOME/build-tools/36.1/zipalign" -c -v 4 "$APK"
+sha256sum "$APK"
+```
+
+2026-11-16 實測結果：
+
+| 檢查 | 結果 |
+| --- | --- |
+| apksigner verify | OK，`CN=Android Debug, O=Android, C=US` |
+| aapt2 badging | `com.dsh.adventureprototype`、versionCode 1、versionName 0.1.0、minSdk 24、targetSdk 36、native-code arm64-v8a |
+| zipalign -c 4 | Verification successful |
+| APK 內 `assets/content/` | 7 個資料檔，獨立驗證器 CONTENT OK |
+| APK 內字型 | `.godot/imported/NotoSansTC-VF...fontdata`（8.9MB）存在 |
+
+## 6. 在 Windows 執行
 
 1. 下載 Godot 4.7.2 stable 標準版（非 .NET 版）。
 2. 以編輯器開啟 `project.godot`，按 F5。
-3. 若要使用外部內容：命令列 `-- --content-dir=<game-content 絕對路徑>`，
-   或在專案設定把 `game/content_dir` 設為內容目錄。
-4. 本輪**未在 Windows 實際執行**；只驗證 headless Linux。
+3. 使用外部內容：`-- --content-dir=<game-content 絕對路徑>`，或專案設定
+   `game/content_dir`。
+4. 本輪**未在 Windows 實際執行**。
 
-## 5. Android 建置（本輪未執行）
-
-目前**尚未建置 APK**，環境缺少：
-
-- Java（JDK 17 以上，Godot 4.x 要求）
-- Android SDK + build-tools + platform-tools
-- Godot 的 Android export templates（4.7.2）
-- 實機或模擬器（驗證安裝、觸控、螢幕比例、安全區）
-
-已就緒的部分：
-
-- `project.godot` 使用 `gl_compatibility` 渲染（適合中低階 Android）。
-- viewport 960x540、`canvas_items` + `expand` 可適應不同長寬比。
-- 整數 3x 縮放（Camera2D zoom）避免像素失真。
-- 未實作觸控輸入；Android 版需要補觸控虛擬按鍵與安全區排版（後續任務）。
-
-未來建置步驟（待工具就緒）：
-
-```bash
-# 需要 export_presets.cfg 與 Android SDK/templates
-"$G" --headless --path . --export-debug "Android" build/app-debug.apk
-```
-
-注意：
-- 匯出時需要把 `*.json`（內容、`res://content/`、`assets/generated/*.json`）納入
-  export filter，否則匯出後的 PCK 不含 JSON 檔。
-- 目前不建議把 `res://content` 的 bootstrap 當成正式內容；正式內容應由
-  `game-content` 提供（外部目錄或內容包，尚未實作下載／安裝）。
-
-## 6. 尚未執行的驗證（不可寫成通過）
+## 7. 尚未執行的驗證（不可寫成通過）
 
 | 項目 | 狀態 | 原因 |
 | --- | --- | --- |
-| 視覺外觀／版面／像素縮放 | 未執行 | 無 GPU／顯示器 |
-| 鍵盤實際操作與 Tween 手感 | 未執行（Tween 邏輯已測） | 無視窗 |
-| Windows 執行 | 未執行 | 本輪只驗證 Linux headless |
-| Android APK 建置 | 未執行 | 缺 Java/SDK/templates |
-| Android 實機安裝、觸控、長寬比、安全區 | 未執行 | 無實機 |
+| 畫面外觀／版面／字型（中文） | 未執行 | 無 GPU／顯示器；字型字形已以程式檢查，但實際排版未驗證 |
+| 觸控操作手感與安全區 | 未執行 | 按鈕與訊號已有測試，但無實機可驗證實際大小與遮擋 |
+| 鍵盤實際操作與 Tween 手感 | 未執行 | 無視窗 |
+| Windows 執行 | 未執行 | 只有 Linux headless 環境 |
+| Android 實機安裝／啟動／觸控／螢幕比例／安全區 | 未執行 | 本環境無 Android 裝置與模擬器 |
+| 正式（release）簽章與上架 | 未執行 | 目前只有 debug 簽章；正式金鑰須由使用者控制 |
 | 音效／動畫／戰鬥／成人模組 | 未實作 | 不在 v0.1 範圍 |

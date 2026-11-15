@@ -1,7 +1,0 @@
-{
-  "schema_version": 1,
-  "id": "region_boot_001",
-  "name": "內建範例區域",
-  "map_ids": ["map_boot_village", "map_boot_forest"],
-  "notes": "res://content 內建 bootstrap 範例，僅供首次啟動與離線示範；正式內容以 game-content 倉庫為權威來源。"
-}

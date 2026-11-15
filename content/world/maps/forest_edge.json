@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "id": "map_boot_village",
-  "name": "內建範例村落",
+  "id": "map_forest_edge",
+  "name": "森林邊緣（暫定）",
   "size": {
     "width": 10,
-    "height": 7
+    "height": 8
   },
   "tile_size": 16,
   "tiles": [
@@ -12,8 +12,9 @@
     "#........#",
     "#..t.....#",
     "#........#",
+    "#...~~...#",
     "#....p...#",
-    "#....p...#",
+    "#...p....#",
     "##########"
   ],
   "legend": {
@@ -25,47 +26,51 @@
       "tile": "grass",
       "walkable": true
     },
-    "t": {
-      "tile": "tree",
+    "~": {
+      "tile": "water",
       "walkable": false
     },
     "p": {
       "tile": "path",
       "walkable": true
+    },
+    "t": {
+      "tile": "tree",
+      "walkable": false
     }
   },
   "spawn": {
     "grid": [
       1,
-      1
+      6
     ]
   },
   "entities": [
     {
-      "id": "npc_boot_guide_001",
-      "type": "npc",
+      "id": "chest_forest_herb_001",
+      "type": "object",
       "grid": [
-        3,
-        3
+        2,
+        2
       ],
-      "display_key": "npc_elder",
+      "display_key": "chest",
       "interaction": {
         "kind": "event",
-        "event_id": "event_boot_guide_001"
+        "event_id": "event_chest_herb_001"
       }
     }
   ],
   "portals": [
     {
-      "id": "portal_boot_village_to_forest",
+      "id": "portal_forest_to_village",
       "grid": [
-        8,
-        5
+        7,
+        6
       ],
-      "target_map_id": "map_boot_forest",
+      "target_map_id": "map_start_village",
       "target_grid": [
-        2,
-        4
+        8,
+        6
       ]
     }
   ]

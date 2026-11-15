@@ -79,3 +79,76 @@
 ### 下一步
 
 見 `NEXT_ACTIONS.md`。
+
+## 2026-11-16（續）— Phase 4：Android 工具鏈與 debug APK 建置
+
+### 目標
+
+依使用者指示（「自己配置環境、編譯成 APK、提交進倉庫」，使用者不介入），
+在 CPU-only 環境自行安裝 Android 建置工具鏈，產出可安裝的 APK，並提交進 game-client 倉庫。
+
+### 環境建置（實際結果）
+
+| 元件 | 版本／位置 | 驗證 |
+| --- | --- | --- |
+| Temurin JDK | 17.0.21，`tools/jdk17`（Adoptium API） | `java -version` OK |
+| Android build-tools | 36.1.0，`tools/android-sdk/build-tools/36.1` | `apksigner --version` OK |
+| Android platform-tools | latest，`tools/android-sdk/platform-tools` | `adb` 存在 |
+| Android platform | android-36，`tools/android-sdk/platforms/android-36` | 目錄存在 |
+| Godot Android export templates | 4.7.2.stable，`tools/home/data/godot/export_templates/4.7.2.stable` | `android_debug.apk` 存在 |
+| debug keystore | `tools/android-keystore/debug.keystore`（alias `androiddebugkey`） | `keytool -list` OK |
+
+**未使用 sdkmanager/cmdline-tools**：cmdline-tools 下載被 Google 限速到約 3KB/s（估 14 小時），
+中止後直接下載 `build-tools_r36.1_linux.zip`、`platform-tools-latest-linux.zip`、
+`platform-36_r02.zip` 並手動配置 SDK 目錄；速度恢復到 8–57MB/s。
+
+### 重要問題與修正
+
+1. **Java 在非 ASCII 路徑失效**：工作區路徑含中文，locale 非 UTF-8 時 Java 將路徑轉成 `?`，
+   `keytool` 報 `Error loading java.security file`。修正：所有 Java 工具以
+   `LANG=C.UTF-8 LC_ALL=C.UTF-8` 執行（已寫入 `tools/build_android.sh` 與 `docs/BUILD.md`）。
+2. **Godot Android 匯出要求 ETC2/ASTC**：首次匯出失敗，需啟用
+   `rendering/textures/vram_compression/import_etc2_astc=true`，重新 `--import` 後成功。
+3. **CJK 字型缺失**：Godot 預設字型不含正體中文，Android 亦不保證系統字型可用；
+   內建 Noto Sans TC Variable（SIL OFL 1.1，來源與雜湊記於 `docs/ASSETS.md` 與
+   `assets/fonts/OFL.txt`），設為 `[gui] theme/custom_font`，並新增字形測試
+   （`Font.has_char` 檢查「中」「旅」「互」）。
+4. **res://content 由 bootstrap 改為建置快照**：新增 `tools/sync_content_bundle.mjs`，
+   驗證 manifest sha256/size 後把 `game-content 0.1.0` 複製為 `res://content`，寫入
+   `BUNDLE_SOURCE.json`；載入器忽略此中繼資料。原 `boot_*` 內容自 repo 移除（見 D-0018）。
+5. **Android 無鍵盤無法操作**：補上觸控虛擬方向鍵、互動、存檔／讀檔按鈕
+   （`scripts/ui/touch_controls.gd`，mobile 自動顯示），並把互動改為統一入口
+   `_request_interact()`（鍵盤與觸控共用）；新增 12 項觸控測試。
+6. **APK 內含內容驗證**：從 APK 抽出 `assets/content/` 以獨立驗證器檢查 → CONTENT OK。
+
+### 測試與驗證（實際命令與結果）
+
+| 命令／檢查 | 結果 |
+| --- | --- |
+| `bash tools/build_android.sh`（同步→驗證→匯入→測試→匯出→驗證） | **APK BUILD + VERIFY PASSED** |
+| `node tools/sync_content_bundle.mjs` | BUNDLE OK：7 檔／4525 bytes |
+| `node tools/validate_content.mjs app_data_git` | CONTENT OK（0 error／0 warning） |
+| `godot --headless --path app_base_git --import` | exit 0 |
+| `godot --headless ... --script res://tests/run_tests.gd -- --content-dir=app_data_git` | **TESTS OK 288/288**、0 SKIP |
+| `godot --headless --path app_base_git --export-debug "Android" …` | 成功，Signed、Verifying APK DONE |
+| `apksigner verify --print-certs` | OK，`CN=Android Debug, O=Android, C=US` |
+| `aapt2 dump badging` | `com.dsh.adventureprototype`、versionCode 1、versionName 0.1.0、minSdk 24、targetSdk 36、arm64-v8a |
+| `zipalign -c -v 4` | Verification successful |
+| APK 內 `assets/content/` 驗證 | CONTENT OK（7 檔） |
+| APK 內 CJK 字型 | `NotoSansTC-VF…fontdata` 存在（8.9MB） |
+| `bash tools/checks.sh` | 7 步全通過（含 APK SHA-256 與 BUILD_INFO 比對） |
+
+APK 成品：`releases/android/adventure-prototype-0.1.0-debug.apk`
+（37,298,075 bytes、SHA-256 `1fda822d9b6f8d8230693fb6568702dc886b932ca9a0c06d62b25e95b11a4af3`），
+建置資訊見 `releases/android/BUILD_INFO.md`。
+
+### 未執行（不得視為通過）
+
+- Android 實機／模擬器安裝、啟動、畫面、中文渲染、觸控手感、安全區、音效：**未驗證**
+  （本環境無 Android 裝置與模擬器）。
+- Windows 端執行：**未驗證**。
+- release 簽章與上架：**未執行**（目前只有 debug 簽章）。
+
+### 下一步
+
+見 `NEXT_ACTIONS.md`。

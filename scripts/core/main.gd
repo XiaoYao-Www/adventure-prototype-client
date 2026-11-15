@@ -25,6 +25,7 @@ var camera: Camera2D
 var hud: Hud
 var dialogue_panel: DialoguePanel
 var error_panel: ErrorPanel
+var touch_controls: TouchControls
 var ui_layer: CanvasLayer
 
 var atlas_texture: Texture2D
@@ -87,6 +88,13 @@ func _build_ui() -> void:
 
 	error_panel = ErrorPanel.new()
 	ui_layer.add_child(error_panel)
+
+	touch_controls = TouchControls.new()
+	ui_layer.add_child(touch_controls)
+	touch_controls.move_pressed.connect(_on_touch_move)
+	touch_controls.interact_pressed.connect(_request_interact)
+	touch_controls.save_pressed.connect(_save_game)
+	touch_controls.load_pressed.connect(_load_game)
 
 	dialogue_panel.advance_requested.connect(_on_dialogue_advance_requested)
 	dialogue_panel.choice_selected.connect(_on_dialogue_choice_selected)
@@ -175,7 +183,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_request_move(direction)
 		return
 	if event.is_action_pressed("interact"):
-		_try_interact()
+		_request_interact()
 
 
 func _movement_direction(event: InputEvent) -> Vector2i:
@@ -222,6 +230,28 @@ func _request_move(direction: Vector2i) -> void:
 func _try_interact() -> void:
 	if session.can_interact():
 		session.start_interaction()
+
+
+## 互動統一入口：對話中 → 推進對話；探索中 → 觸發面向物件的互動。
+## 鍵盤（E/Space/Enter）與觸控「互動」鍵都走這裡。
+func _request_interact() -> void:
+	if session == null or not gameplay_ready:
+		return
+	if session.is_in_dialogue():
+		if dialogue_panel.has_choices():
+			return
+		session.advance_dialogue()
+		return
+	_try_interact()
+
+
+## 觸控方向鍵：一次一格；對話中不移動。
+func _on_touch_move(direction: Vector2i) -> void:
+	if not gameplay_ready or session == null:
+		return
+	if session.is_in_dialogue():
+		return
+	_request_move(direction)
 
 
 func _on_player_move_finished(_to_cell: Vector2i) -> void:
@@ -311,7 +341,7 @@ func _update_prompt() -> void:
 		return
 	if session.can_interact():
 		var entity: Dictionary = session.get_interaction_target()
-		hud.set_prompt("E 互動：" + _entity_display_name(entity))
+		hud.set_prompt("互動：" + _entity_display_name(entity))
 	else:
 		hud.set_prompt("")
 

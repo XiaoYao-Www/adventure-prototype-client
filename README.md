@@ -22,7 +22,8 @@ Android 優先、2D、格子式移動的冒險探索 RPG 遊戲本體。
   來源優先序 CLI `--content-dir=` > ProjectSettings `game/content_dir` > `res://content`。
 - 畫面：`_draw` 繪製格子與實體（v0.1 不用 TileMapLayer），placeholder atlas 或色塊備援；
   Camera2D 整數 3x 縮放跟隨玩家。
-- Headless 測試：265 項斷言（fixtures + 真實 game-content，實測 265/265）。
+- 觸控輸入：Android/mobile 自動顯示虛擬方向鍵、互動、存檔／讀檔按鈕（觸控目標 ≥ 48px）；桌機自動隱藏。
+- Headless 測試：288 項斷言（fixtures + 真實 game-content，實測 288/288）。
 
 ## 目錄結構
 
@@ -42,13 +43,13 @@ game-client/
 │   ├── world/world_view.gd
 │   ├── ui/{dialogue_panel,hud,error_panel}.gd
 │   └── save/save_manager.gd
-├── content/                   # res://content：內建 bootstrap 範例內容（非權威內容）
+├── content/                   # res://content：建置快照（由 tools/sync_content_bundle.mjs 從 game-content 產生）
 ├── assets/generated/          # placeholder atlas（由 Captain 的產生器生成）
 ├── tests/
 │   ├── run_tests.gd           # headless 測試入口（extends SceneTree）
 │   ├── test_helper.gd         # 可重用斷言輔助
 │   ├── fixtures/              # 獨立於 game-content 的內容載入器 fixture
-│   └── tools/generate_manifests.gd  # 開發工具：重算 fixture/bootstrap manifest
+│   └── tools/generate_manifests.gd  # 開發工具：重算 fixture manifest（res://content 由 sync 工具管理）
 └── docs/
     ├── architecture/CONTENT_CONTRACT.md
     ├── architecture/SAVE_FORMAT.md
@@ -63,8 +64,8 @@ game-client/
   `scripts/core/main.gd`，並額外新增 `scripts/core/game_session.gd`，
   把可測試的遊戲流程與畫面／節點組裝分離（session 為純邏輯，不建立節點）。
 - `grid_map.gd` 的 `class_name` 使用 `MapGrid`，避免與 Godot 內建 3D `GridMap` 類別同名。
-- `res://content/` 內建最小 bootstrap 範例（2 張小地圖），僅供首次啟動／離線示範；
-  正式內容一律以 `game-content` 為權威來源。
+- `res://content/` 是 APK 內建建置快照（來源 `game-content 0.1.0`，由 `tools/sync_content_bundle.mjs` 產生）；
+  正式內容一律以 `game-content` 為權威來源，不手動編輯此目錄。
 
 ## 執行
 
@@ -84,7 +85,7 @@ timeout 120 "$G" --headless --path . --import
 timeout 120 "$G" --headless --path . --quit-after 120 -- \
   --content-dir=/workspace/自動遊戲開發/app_data_git
 
-# 使用內建 bootstrap 內容
+# 使用內建建置快照內容（game-content 0.1.0）
 timeout 120 "$G" --headless --path . --quit-after 120
 ```
 
@@ -116,3 +117,14 @@ timeout 120 "$G" --headless --path . --script res://tests/run_tests.gd \
 - 沒有觸控操作（輸入 map 只有鍵盤）；Android 版需要後續補觸控與安全區排版。
 - `repeatable` 事件記錄寫入存檔；`repeatable: true` 的事件可重複互動。
 - 未實作：戰鬥、成人內容模組、下載器、TileMapLayer、存檔遷移（save_version > 1）。
+
+## Android APK（v0.1，debug 簽章）
+
+- 成品：[`releases/android/adventure-prototype-0.1.0-debug.apk`](releases/android/adventure-prototype-0.1.0-debug.apk)
+  （約 35.6 MiB；建置資訊與 SHA-256 見 `releases/android/BUILD_INFO.md`）。
+- 套件：`com.dsh.adventureprototype`、versionCode 1、versionName 0.1.0、minSdk 24、targetSdk 36、**arm64-v8a only**。
+- **debug 簽章**（CN=Android Debug），只供安裝測試，不可用於商店發布。
+- 安裝：`adb install -r releases/android/adventure-prototype-0.1.0-debug.apk`
+  （Android 7.0 以上、arm64 裝置）。
+- 本輪**未在實機或模擬器安裝驗證**（本環境無 Android 裝置）；觸控按鈕已實作但未經真機操作測試。
+- 重建：見 `docs/BUILD.md`，或工作區 `tools/build_android.sh`。

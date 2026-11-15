@@ -60,3 +60,17 @@ Captain 維護，程式 Worker 不修改）。這些檔案是專案自行生成�
 | 素材 | 來源 | 授權 | 狀態 |
 | --- | --- | --- | --- |
 | `assets/generated/placeholder_tiles.png` / `.json` | 本專案產生器生成 | 專案自有，無第三方權利 | 暫代視覺，非最終美術 |
+
+## 字型（v0.1 APK 內建）
+
+Android 沒有保證使用者裝置具備我們需要的正體中文字型，且 Godot 預設主題字型不含 CJK
+字符；因此 v0.1 內建一套 OFL 授權的正體中文字型，並設為專案預設主題字型。
+
+| 檔案 | 來源 | 授權 | 雜湊／版本 |
+| --- | --- | --- | --- |
+| `assets/fonts/NotoSansTC-VF.ttf` | Google Fonts `ofl/notosanstc`（Noto Sans TC Variable，基於 Adobe Source Han Sans） | SIL Open Font License 1.1（全文 `assets/fonts/OFL.txt`），允許內嵌、修改、再散布；保留字型名稱規範需遵守 | SHA-256 `864727d210d54f2537bbe23b3a839436c3992af72de9322af5270897246bd44f`，下載於 2026-11-16 |
+
+- 專案設定：`project.godot` → `[gui] theme/custom_font="res://assets/fonts/NotoSansTC-VF.ttf"`。
+- 本字型只用於遊戲 UI 文字；未修改字型檔，未重新命名。
+- **未驗證**：Android 實機上的中文顯示、字重與行距（本環境無顯示器，headless 不呈現畫面）。
+- 若之後更換字型，必須同步更新此表、`OFL.txt` 與 `tools/README.md` 紀錄。

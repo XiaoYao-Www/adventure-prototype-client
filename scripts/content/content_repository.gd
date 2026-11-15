@@ -12,7 +12,7 @@ extends RefCounted
 ## 不應開始遊戲（GameSession.setup() 會檢查 is_ok()）。
 ##
 ## 內容資料來源：game-content 倉庫（外部目錄），或 res://content 內建
-## bootstrap 範例。載入器只讀取資料，不執行內容中的任何程式碼。
+## 建置快照。載入器只讀取資料，不執行內容中的任何程式碼。
 
 const GAME_VERSION := "0.1.0"
 const SUPPORTED_MANIFEST_SCHEMA := 1
@@ -791,6 +791,9 @@ func _scan_unlisted_files() -> void:
 		if listed.has(relative_path):
 			continue
 		if relative_path == "manifest.json":
+			continue
+		# 建置快照的來源中繼資料（tools/sync_content_bundle.mjs 產生），不是內容檔。
+		if relative_path == "BUNDLE_SOURCE.json":
 			continue
 		_warn("W_UNLISTED_FILE %s 未列於 manifest.files，已忽略" % relative_path)
 

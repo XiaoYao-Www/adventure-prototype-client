@@ -78,6 +78,7 @@ func _run_all() -> void:
 	_test_save_roundtrip()
 	_test_save_error_handling()
 	_test_input_map_and_project_settings()
+	_test_touch_controls()
 	await _test_world_view_atlas()
 	await _test_player_controller()
 	await _test_main_scene()
@@ -268,7 +269,7 @@ func _test_content_valid() -> void:
 
 
 func _test_content_bootstrap() -> void:
-	th.section("內容載入：res://content 內建 bootstrap")
+	th.section("內容載入：res://content 內建建置快照（來自 game-content）")
 	var repo: ContentRepository = _load_repo("res://content")
 	_print_repo(repo, "res://content")
 	th.check_true(repo.is_ok(), "內建內容可載入")
@@ -692,6 +693,18 @@ func _test_input_map_and_project_settings() -> void:
 	th.check_eq(String(ProjectSettings.get_setting("application/config/version", "")), "0.1.0", "遊戲版本 0.1.0")
 	th.check_eq(String(ProjectSettings.get_setting("application/run/main_scene", "")), "res://scenes/main.tscn", "主場景")
 
+	# CJK 字型：APK 內建 Noto Sans TC（OFL），避免中文顯示成方塊或空白
+	var font_path: String = "res://assets/fonts/NotoSansTC-VF.ttf"
+	th.check_true(ResourceLoader.exists(font_path), "內建 CJK 字型存在")
+	var font_resource: Resource = load(font_path)
+	th.check_true(font_resource is Font, "字型可載入為 Font")
+	if font_resource is Font:
+		var font: Font = font_resource
+		th.check_true(font.has_char("中".unicode_at(0)), "字型含「中」字形")
+		th.check_true(font.has_char("旅".unicode_at(0)), "字型含「旅」字形")
+		th.check_true(font.has_char("互動".unicode_at(0)), "字型含「互」字形")
+	th.check_eq(String(ProjectSettings.get_setting("gui/theme/custom_font", "")), font_path, "專案預設字型指向內建 CJK 字型")
+
 
 # ---------------------------------------------------------------------------
 # 畫面節點（headless 只驗證建立與資料，視覺外觀未驗證）
@@ -794,6 +807,42 @@ func _test_main_scene() -> void:
 # ---------------------------------------------------------------------------
 # 真實內容（game-content）
 # ---------------------------------------------------------------------------
+
+func _test_touch_controls() -> void:
+	th.section("觸控控制（Android 無鍵盤可操作性）")
+	var controls := TouchControls.new()
+	root.add_child(controls)
+	th.check_eq(controls.dpad_button_count(), 4, "方向鍵有 4 個")
+	for direction: Vector2i in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
+		var button: Button = controls.direction_button(direction)
+		th.check_true(button != null, "方向鍵存在：" + str(direction))
+		if button != null:
+			th.check_true(
+				button.custom_minimum_size.x >= 48.0 and button.custom_minimum_size.y >= 48.0,
+				"方向鍵觸控尺寸 >= 48px"
+			)
+	var seen: Array = []
+	controls.move_pressed.connect(func(direction: Vector2i) -> void: seen.append(direction))
+	controls.direction_button(Vector2i.DOWN).pressed.emit()
+	th.check_eq(seen.size(), 1, "按下方向鍵會發出 move_pressed")
+	th.check_eq(seen[0], Vector2i.DOWN, "方向正確")
+	var interact_count: Array = [0]
+	controls.interact_pressed.connect(func() -> void: interact_count[0] += 1)
+	controls.interact_button().pressed.emit()
+	th.check_eq(interact_count[0], 1, "互動鍵發出 interact_pressed")
+	th.check_true(controls.interact_button().custom_minimum_size.x >= 48.0, "互動鍵觸控尺寸足夠")
+	th.check_true(controls.save_button() != null, "存檔鍵存在")
+	th.check_true(controls.load_button() != null, "讀檔鍵存在")
+	var save_count: Array = [0]
+	var load_count: Array = [0]
+	controls.save_pressed.connect(func() -> void: save_count[0] += 1)
+	controls.load_pressed.connect(func() -> void: load_count[0] += 1)
+	controls.save_button().pressed.emit()
+	controls.load_button().pressed.emit()
+	th.check_eq(save_count[0], 1, "存檔鍵發出 save_pressed")
+	th.check_eq(load_count[0], 1, "讀檔鍵發出 load_pressed")
+	controls.queue_free()
+
 
 func _test_real_content() -> void:
 	th.section("真實內容：game-content（app_data_git）")

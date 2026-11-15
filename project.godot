@@ -17,6 +17,8 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [display]
 
+window/handheld/orientation=6
+
 window/size/viewport_width=960
 window/size/viewport_height=540
 window/stretch/mode="canvas_items"
@@ -72,5 +74,11 @@ load_game={
 
 [rendering]
 
+textures/vram_compression/import_etc2_astc=true
+
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+
+[gui]
+
+theme/custom_font="res://assets/fonts/NotoSansTC-VF.ttf"

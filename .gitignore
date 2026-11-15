@@ -26,3 +26,8 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# APK 成品：一般忽略；releases/android/ 下的發布成品由使用者明確要求提交（2026-11-16）
+*.apk
+!releases/android/*.apk
+*.apk.idsig

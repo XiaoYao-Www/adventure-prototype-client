@@ -14,7 +14,7 @@
 1. CLI 使用者參數：`--content-dir=<abs path>`（`OS.get_cmdline_user_args()`；
    也接受 `--content-dir <path>`）。
 2. ProjectSettings：`game/content_dir`（預設空字串）。
-3. `res://content`（內建 bootstrap 範例）。
+3. `res://content`（APK 內建建置快照，來源為 game-content，由 `tools/sync_content_bundle.mjs` 產生）。
 
 外部絕對路徑（game-content 倉庫根目錄）可讀取；`res://` 路徑亦可。載入器不修改
 內容目錄中的任何檔案。

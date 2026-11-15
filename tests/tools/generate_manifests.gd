@@ -1,5 +1,8 @@
 extends SceneTree
-## 開發工具：為 res://content 與 tests/fixtures/* 產生 manifest.json。
+## 開發工具：為 tests/fixtures/* 產生 manifest.json。
+##
+## 注意：res://content 是 APK 內建建置快照，由 tools/sync_content_bundle.mjs 產生，
+## 本工具不再改寫它（避免把 content_id 蓋成非權威值）。
 ##
 ## 這不是測試的一部分（測試不會自動改寫 fixture），手動執行：
 ##   $G --headless --path <proj> --script res://tests/tools/generate_manifests.gd
@@ -11,7 +14,6 @@ extends SceneTree
 ## - missing_manifest 不產生 manifest（測試「找不到內容」）。
 
 const CONTENT_ID_BY_DIR: Dictionary = {
-	"res://content": "builtin_bootstrap",
 	"res://tests/fixtures/valid_content": "fixture_valid",
 	"res://tests/fixtures/tampered_content": "fixture_tampered",
 	"res://tests/fixtures/unknown_effect": "fixture_unknown_effect",

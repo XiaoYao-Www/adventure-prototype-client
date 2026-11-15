@@ -15,11 +15,18 @@
 | D-0008 | 2026-11-16 | 內容格式 v1：JSON 資料 + `manifest.json`（sha256/size）+ `schemas/*.schema.json`；`schema_version=1` | accepted | 在已授權的 v0.1 技術範圍內由 Lead 決定；使用者可隨時要求變更 | content contract、client loader |
 | D-0009 | 2026-11-16 | 效果白名單 v1 僅 `set_flag`、`give_item`；未知 effect type 一律拒絕、不猜測執行 | accepted | 縮小攻擊面與驗證範圍，符合「內容不執行任意程式碼」 | content contract、client loader |
 | D-0010 | 2026-11-16 | 內容與呈現解耦：內容只使用語意值（`tile` key、`display_key`），client 負責對應 placeholder atlas | accepted | 讓未來替換正式素材時不必改內容資料 | content contract、art pipeline |
-| D-0011 | 2026-11-16 | 保留 client 內建 `res://content` bootstrap 範例（`builtin_bootstrap 0.1.0`，id 以 `boot_` 區隔）作為離線啟動 fallback | accepted | 首次啟動即可玩；與 game-content 的權威內容分開命名，仍須注意少量重複 | client repo、載入順序 |
+| D-0011 | 2026-11-16 | 保留 client 內建 `res://content` bootstrap 範例作為離線啟動 fallback | **superseded**（by D-0018） | 已被「game-content 建置快照」取代 | client repo、載入順序 |
 | D-0012 | 2026-11-16 | 提交 Godot 4.7 產生的 `*.uid` 與 `*.import`，但不提交 `.godot/` 快取 | accepted | 官方建議保留 uid；`.godot/` 可由匯入重建 | git、client repo |
 | D-0013 | 2026-11-16 | 起始地圖暫定規則：第一個 region（id 排序）的 `map_ids[0]`，否則取 map id 排序第一張 | proposed | 契約 v1 沒有正式 `start_map_id`；內容作者調整區域順序會改變起始點 | content contract v1.1 |
 | D-0014 | 2026-11-16 | 內容包發布容器（PCK／ZIP／自訂） | proposed | 尚未做技術驗證；D-0011 的 res://content 僅為開發用 bootstrap | release、Android 更新 |
 | D-0015 | 2026-11-16 | 畫面方向（直向／橫向）與戰鬥形式 | proposed | 尚未定案；v0.1 採 960×540 可調整佈局，未鎖死 | UX、game design |
+| D-0016 | 2026-11-16 | Android 建置管線：Godot 非 gradle debug 匯出；arm64-v8a、minSdk 24、targetSdk 36；工具鏈（JDK 17、build-tools 36.1、platform-tools、platform android-36、export templates 4.7.2）安裝於工作區 `tools/` | accepted | 使用者明確指示自行配置環境並產出 APK；建置與驗證成功 | toolchain、release |
+| D-0017 | 2026-11-16 | 將 debug APK 成品提交進 game-client 倉庫（`releases/android/`），作為「不提交產生檔」規則的明確例外 | accepted | 使用者明確要求「編譯成 APK，提交進倉庫」 | git、release |
+| D-0018 | 2026-11-16 | APK 內建內容改為 game-content 的建置快照：`res://content` 由 `tools/sync_content_bundle.mjs` 從 game-content 驗證後產生，移除 `boot_*` bootstrap；此決策取代 D-0011 | accepted | 讓 APK 內含權威內容；快照可重建、manifest 雜湊可追溯 | content contract、release |
+| D-0019 | 2026-11-16 | 內建 Noto Sans TC Variable（SIL OFL 1.1）作為專案預設字型 | accepted | Godot 預設字型不含 CJK、Android 不保證系統字型；授權允許內嵌散布 | client repo、art/font |
+| D-0020 | 2026-11-16 | APK 螢幕方向先設 `sensor`，不鎖定直向／橫向 | proposed | 產品方向未定案；先讓裝置可旋轉，待使用者視覺驗收後決定 | UX |
+| D-0021 | 2026-11-16 | 建置 Java 工具鏈一律以 UTF-8 locale 執行（`LANG=C.UTF-8`） | accepted | 非 ASCII 工作區路徑在非 UTF-8 locale 下會讓 Java 路徑變成 `?`，導致 keytool/apksigner 失敗 | 建置流程 |
+| D-0022 | 2026-11-16 | 加入觸控虛擬控制（方向鍵、互動、存檔、讀檔），mobile 自動顯示、桌機隱藏 | accepted | Android 手機無鍵盤，缺少觸控即無法遊玩；已加 12 項測試 | client UI、Android |
 
 ## 變更規則
 
